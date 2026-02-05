@@ -1,0 +1,140 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-05T00:27:50.739Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 7,
+    "implemented": 5,
+    "items": [
+      {
+        "id": "REQ-10",
+        "summary": "Add server and channel customization beyond basic create/edit/delete, including fields for server (name, description, icon, banner, settings as supported) and channel (name, topic/description, icon, settings as supported), with corresponding backend persistence and frontend forms to view and update these fields.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/servers/ServerSettingsDialog.tsx",
+          "frontend/src/components/channels/ChannelSettingsDialog.tsx",
+          "frontend/src/components/servers/ServerList.tsx",
+          "frontend/src/components/channels/ChannelList.tsx",
+          "frontend/src/pages/ServersPage.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-11",
+        "summary": "Implement a server role/rank permission system with preset roles (at minimum: Owner, Admin, Moderator, Member) and enforce permissions for server/channel actions (configure/edit/delete and any customization actions added). Include an initial path for server owners to customize role permissions after presets are created.",
+        "status": "missing",
+        "plannedFiles": [
+          "frontend/src/components/servers/RolePermissionsEditor.tsx",
+          "frontend/src/components/servers/ServerSettingsDialog.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/components/servers/ServerList.tsx",
+          "frontend/src/components/channels/ChannelList.tsx"
+        ],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-12",
+        "summary": "Expand user profiles to support additional fields spanning both a social style and gamer/tag style (e.g., bio, links, banner, status, badges, pronouns, theme color or similar), and update the Profile/Settings page UI to edit and save these fields.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/ProfileSettingsPage.tsx",
+          "frontend/src/components/profile/ProfileFieldsPreview.tsx",
+          "frontend/src/components/profile/ProfileSetupModal.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/ProfileSettingsPage.tsx",
+          "frontend/src/components/profile/ProfileSetupModal.tsx"
+        ]
+      },
+      {
+        "id": "REQ-13",
+        "summary": "Add a Profile/Settings toggle that controls visibility of the user’s ID (principal) to other users, and ensure this setting is respected anywhere the app displays user identity details (including the quick profile preview popover).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/ProfileSettingsPage.tsx",
+          "frontend/src/components/profile/useIdVisibility.ts",
+          "frontend/src/components/profile/ProfilePopover.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/ProfileSettingsPage.tsx",
+          "frontend/src/components/profile/ProfilePopover.tsx"
+        ]
+      },
+      {
+        "id": "REQ-14",
+        "summary": "Implement global username-based typing/autocomplete and resolution so users can quickly find/select other users by username/display name wherever user selection is relevant (at minimum: starting a DM, selecting recipients if applicable, and composing messages/posts for @-mention style selection if supported).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/users/UserAutocompleteInput.tsx",
+          "frontend/src/components/dms/StartDmForm.tsx",
+          "frontend/src/components/messages/MessageComposer.tsx",
+          "frontend/src/components/dms/DmComposer.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/users/UserAutocompleteInput.tsx",
+          "frontend/src/components/dms/StartDmForm.tsx",
+          "frontend/src/components/messages/MessageComposer.tsx",
+          "frontend/src/components/dms/DmComposer.tsx"
+        ]
+      },
+      {
+        "id": "REQ-15",
+        "summary": "Add a quick profile preview popover/modal that appears when clicking a user’s name or avatar in message contexts (channel messages and DMs at minimum), showing key profile info (avatar, display name, and newly added profile fields as appropriate) while respecting the user ID visibility setting.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/profile/ProfilePopover.tsx",
+          "frontend/src/components/messages/MessageItem.tsx",
+          "frontend/src/components/feed/PostItem.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/profile/ProfilePopover.tsx",
+          "frontend/src/components/messages/MessageItem.tsx",
+          "frontend/src/components/feed/PostItem.tsx"
+        ]
+      },
+      {
+        "id": "REQ-16",
+        "summary": "Fix the profile avatar image upload flow so that uploading an image for a profile reliably works end-to-end (Profile Settings page and any initial profile setup modal), including proper validation, upload success feedback, persistence, and display via the existing avatar rendering logic.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/profile/AvatarUploader.tsx",
+          "frontend/src/pages/ProfileSettingsPage.tsx",
+          "frontend/src/components/profile/ProfileSetupModal.tsx",
+          "frontend/src/components/profile/UserAvatar.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/profile/AvatarUploader.tsx",
+          "frontend/src/pages/ProfileSettingsPage.tsx",
+          "frontend/src/components/profile/ProfileSetupModal.tsx",
+          "frontend/src/components/profile/UserAvatar.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/components/dms/DmComposer.tsx",
+    "frontend/src/components/dms/StartDmForm.tsx",
+    "frontend/src/components/feed/PostItem.tsx",
+    "frontend/src/components/messages/MessageComposer.tsx",
+    "frontend/src/components/messages/MessageItem.tsx",
+    "frontend/src/components/profile/AvatarUploader.tsx",
+    "frontend/src/components/profile/ProfilePopover.tsx",
+    "frontend/src/components/profile/ProfileSetupModal.tsx",
+    "frontend/src/components/profile/UserAvatar.tsx",
+    "frontend/src/components/users/UserAutocompleteInput.tsx",
+    "frontend/src/pages/ProfileSettingsPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

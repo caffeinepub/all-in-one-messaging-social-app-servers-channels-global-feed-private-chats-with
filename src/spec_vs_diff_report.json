@@ -1,0 +1,63 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-05T00:27:50.697Z",
+  "summary": "Diff implements username search/autocomplete (backend + reusable input), @-mention autocomplete in message/DM composers, quick profile popovers on avatars/names, and a new avatar upload component integrated into profile setup/settings and avatar rendering. Server/channel customization and role/permission presets are not present. Expanded profile fields and ID-visibility toggle are added in frontend UI/popover but lack corresponding backend persistence in the shown backend types/save logic.",
+  "missing_requirements": [
+    {
+      "id": "REQ-10",
+      "requirement": "Add server and channel customization fields (server: name/description/icon/banner/settings; channel: name/topic/icon/settings) with backend persistence and frontend settings forms; lists/headers reflect updates.",
+      "reason": "No server/channel additional fields, settings UIs, or persistence logic are shown; backend Server/Channel types in the diff still only contain id/name/createdAt/messages/channels and no icon/banner/description/topic/settings fields.",
+      "evidence": [
+        "backend/main.mo",
+        "frontend-file-summaries.txt (ServerList/ChannelList described as inline editing/edit-delete only; no settings UI mentioned)"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "requirement": "Implement server role/rank permission system with preset roles (Owner/Admin/Moderator/Member), enforcement for server/channel actions, and owner customization of permission flags with persistence.",
+      "reason": "No role data models, role assignment APIs, permission flag editing UI, or enforcement logic for roles are shown in the diff; only existing AccessControl permission checks for generic #user appear around profile/search.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "requirement": "Expand user profiles with additional fields (bio/links/banner/status/badges/pronouns/theme color etc.) and update Profile/Settings page to edit/save; render new fields read-only in at least one context; show validation errors in English.",
+      "reason": "Frontend adds fields and renders them (settings page + popover), but backend UserProfile type and save/get methods shown do not include these fields, so saving/persisting them is not evidenced.",
+      "evidence": [
+        "backend/main.mo (UserProfile only: displayName, avatarUrl, avatarAttachment; saveCallerUserProfile stores that type)",
+        "frontend/src/pages/ProfileSettingsPage.tsx (casts to ExtendedUserProfile and sends extra fields via `any`)",
+        "frontend/src/components/profile/ProfilePopover.tsx (renders bio/status/pronouns/links/etc. from cast ExtendedUserProfile)"
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "requirement": "Add a Profile/Settings toggle controlling visibility of the user principal/ID to others, and enforce it anywhere identity details are displayed (including popovers); owner can still see their own ID in settings.",
+      "reason": "Popover respects a `showIdToOthers` flag (and always shows for own profile), and settings UI includes a `showIdToOthers` state, but backend persistence for this flag is not shown (UserProfile type lacks it), so the toggle likely will not persist/propagate reliably.",
+      "evidence": [
+        "backend/main.mo (UserProfile type lacks `showIdToOthers`)",
+        "frontend/src/components/profile/ProfilePopover.tsx (uses `extendedProfile?.showIdToOthers !== false`)",
+        "frontend/src/pages/ProfileSettingsPage.tsx (maintains `showIdToOthers` and sends it in `profileData`)"
+      ]
+    }
+  ],
+  "hallucinated_features": [],
+  "confidence": 0.74,
+  "changed_files": [
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/components/dms/DmComposer.tsx",
+    "frontend/src/components/dms/StartDmForm.tsx",
+    "frontend/src/components/feed/PostItem.tsx",
+    "frontend/src/components/messages/MessageComposer.tsx",
+    "frontend/src/components/messages/MessageItem.tsx",
+    "frontend/src/components/profile/AvatarUploader.tsx",
+    "frontend/src/components/profile/ProfilePopover.tsx",
+    "frontend/src/components/profile/ProfileSetupModal.tsx",
+    "frontend/src/components/profile/UserAvatar.tsx",
+    "frontend/src/components/users/UserAutocompleteInput.tsx",
+    "frontend/src/pages/ProfileSettingsPage.tsx",
+    "project_state.json"
+  ]
+}

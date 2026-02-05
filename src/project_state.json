@@ -1,0 +1,325 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 27,
+  "summary": "Implemented an MVP combined messaging/social app with Internet Identity auth, user profiles, global feed, Discord-style servers/channels, 1:1 DMs, polling-based near-real-time updates, and shared media uploads rendered across posts and messages.",
+  "existing_features": [
+    {
+      "id": "IF-1",
+      "title": "Internet Identity authentication + minimal user profile",
+      "synonyms": [
+        "II sign-in",
+        "auth gate",
+        "profile setup"
+      ],
+      "description": "Users sign in with Internet Identity and complete a minimal profile (display name, optional avatar reference) used across posts, servers/channels, and DMs.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "IF-2",
+      "title": "Global feed with post creation and browsing",
+      "synonyms": [
+        "X/Twitter-like feed",
+        "posts timeline"
+      ],
+      "description": "Authenticated users can create posts with text and optional attachments; all users can browse the feed in reverse chronological order.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "IF-3",
+      "title": "Servers and channels (create + browse channel timelines)",
+      "synonyms": [
+        "Discord-style servers",
+        "channel message timeline"
+      ],
+      "description": "Authenticated users can create servers and text channels; users can view a per-channel message timeline and post messages.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "IF-4",
+      "title": "Direct messages (1:1) with threads and timelines",
+      "synonyms": [
+        "WhatsApp-like DMs",
+        "private chats"
+      ],
+      "description": "Authenticated users can start 1:1 conversations (by principal string) and exchange messages in a DM thread timeline.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "IF-5",
+      "title": "Polling-based near-real-time refresh for feed, channels, and DMs",
+      "synonyms": [
+        "refresh updates",
+        "near-real-time polling"
+      ],
+      "description": "Client polling keeps the global feed, channel timelines, and DM threads refreshed close to real time without sockets.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "IF-6",
+      "title": "Shared media uploads for posts and messages (blob storage)",
+      "synonyms": [
+        "attachments",
+        "image/file upload"
+      ],
+      "description": "Frontend supports uploading attachments; backend stores blobs and returns references rendered back as post/message attachments.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "IF-7",
+      "title": "Core navigation and screens: Feed, Servers, DMs, Profile/Settings",
+      "synonyms": [
+        "app layout",
+        "navigation structure"
+      ],
+      "description": "Coherent navigation and core pages to move between global feed, servers/channels, direct messages, and profile/settings.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "IF-8",
+      "title": "Cohesive modern UI theme with consistent components and spacing",
+      "synonyms": [
+        "visual theme",
+        "UI styling"
+      ],
+      "description": "Applied a distinct theme and component styling across feed and messaging layouts (avoiding a blue/purple primary palette).",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "IF-9",
+      "title": "Generated brand/UX images included as public assets and used in UI",
+      "synonyms": [
+        "logo",
+        "empty state illustrations"
+      ],
+      "description": "Generated and placed static assets under frontend/public/assets/generated and rendered them in relevant UI locations (logo/empty states).",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "IF-10",
+      "title": "Scoped-down MVP implementation to unblock initial failed build",
+      "synonyms": [
+        "smaller scoped first release",
+        "MVP retry"
+      ],
+      "description": "Delivered a smaller-scoped but complete end-to-end MVP including auth, feed, servers/channels, DMs, polling, and media uploads.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "feature-expand-user-profiles-to-support-additional-fields-spanning-both-a-social-style-and-gamer-tag-style-e-g-bio-links-banner-status-badges-pronouns-theme-color-or-similar-and-update-the-profile-settings-page-ui-to-edit-and-save-these-fields",
+      "title": "Expand user profiles to support additional fields spanning both a social style and gamer/tag style (e.g., bio, links, banner, status, badges, pronouns, theme color or similar), and update the Profile/Settings page UI to edit and save these fields.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-profile-settings-toggle-that-controls-visibility-of-the-user-s-id-principal-to-other-users-and-ensure-this-setting-is-respected-anywhere-the-app-displays-user-identity-details-including-the-quick-profile-preview-popover",
+      "title": "Add a Profile/Settings toggle that controls visibility of the user’s ID (principal) to other users, and ensure this setting is respected anywhere the app displays user identity details (including the quick profile preview popover).",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-global-username-based-typing-autocomplete-and-resolution-so-users-can-quickly-find-select-other-users-by-username-display-name-wherever-user-selection-is-relevant-at-minimum-starting-a-dm-selecting-recipients-if-applicable-and-composing-messages-posts-for-mention-style-selection-if-supported",
+      "title": "Implement global username-based typing/autocomplete and resolution so users can quickly find/select other users by username/display name wherever user selection is relevant (at minimum: starting a DM, selecting recipients if applicable, and composing messages/posts for @-mention style selection if supported).",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-quick-profile-preview-popover-modal-that-appears-when-clicking-a-user-s-name-or-avatar-in-message-contexts-channel-messages-and-dms-at-minimum-showing-key-profile-info-avatar-display-name-and-newly-added-profile-fields-as-appropriate-while-respecting-the-user-id-visibility-setting",
+      "title": "Add a quick profile preview popover/modal that appears when clicking a user’s name or avatar in message contexts (channel messages and DMs at minimum), showing key profile info (avatar, display name, and newly added profile fields as appropriate) while respecting the user ID visibility setting.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-profile-avatar-image-upload-flow-so-that-uploading-an-image-for-a-profile-reliably-works-end-to-end-profile-settings-page-and-any-initial-profile-setup-modal-including-proper-validation-upload-success-feedback-persistence-and-display-via-the-existing-avatar-rendering-logic",
+      "title": "Fix the profile avatar image upload flow so that uploading an image for a profile reliably works end-to-end (Profile Settings page and any initial profile setup modal), including proper validation, upload success feedback, persistence, and display via the existing avatar rendering logic.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Require sign-in to access the Servers page (auth gate / redirect to sign-in)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Profile image: let users choose between uploading an image or providing an image URL",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Global feed post creation: allow adding an image URL (in addition to current attachments)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Channel/DM messaging: allow users to delete their own messages",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Server channel post/message creation: let users choose between uploading an image or providing an image URL",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Post deletion permissions: users/server owners can delete their own posts; server owners can delete others’ posts",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Servers and channels management: support editing and deleting servers and channels (with appropriate permissions)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "DM initiation: allow searching by username to start a private message (for now)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Servers/channels customization: support configuring server + channel details beyond basic edit/delete (e.g., descriptions/topics, icons/banners, settings)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Profile page enhancements: add more configurable profile fields and/or profile settings sections beyond the current minimal profile",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Introduce a server role/rank permission system to control who can edit/delete/customize servers and channels",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Profile/Settings: add a toggle to control visibility of the user’s ID (principal)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Add username-based typing/autocomplete/resolution in relevant places for easier access (beyond DM initiation)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Add a quick profile preview popover when clicking a user’s name/avatar in messages (and similar contexts)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Add server and channel customization beyond basic create/edit/delete, including fields for server (name, description, icon, banner, settings as supported) and channel (name, topic/description, icon, settings as supported), with corresponding backend persistence and frontend forms to view and update these fields.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Implement a server role/rank permission system with preset roles (at minimum: Owner, Admin, Moderator, Member) and enforce permissions for server/channel actions (configure/edit/delete and any customization actions added). Include an initial path for server owners to customize role permissions after presets are created.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "status": "pending"
+    }
+  ],
+  "architectural_notes": [
+    "Confirmed initial scope: near-real-time messaging; mix of Discord-style servers/channels + global feed; support text plus images/uploads from v1.",
+    "Backend uses Motoko canister modules for authorization/access control and blob storage, with frontend using an actor-based client.",
+    "Near-real-time UX is implemented via client polling intervals for feed/channel/DM timelines (no realtime sockets).",
+    "Frontend is a React + Tailwind + shadcn/ui component system with a shared AppLayout/AppNav and dedicated pages for Feed/Servers/DMs/Profile.",
+    "Add URL-based image references as an alternative to uploaded blobs for profile images and post attachments.",
+    "Introduce delete/edit permission rules for messages, posts, servers, and channels (ownership + server-owner moderation).",
+    "Add a username search/index path to resolve a username to principal for initiating DMs.",
+    "Upcoming scope: add richer server/channel configuration & customization, plus expanded Profile page settings.",
+    "Planned permissions expansion: add role/rank system (RBAC) for server/channel management beyond simple ownership checks.",
+    "Profile settings should include a user-controlled privacy toggle for showing/hiding the user’s principal/ID in the UI."
+  ],
+  "known_issues": [
+    "Profile image upload appears broken (user cannot upload an image for their profile); image-URL option may still work but needs verification.",
+    "Profile avatar image upload is confirmed broken by user; image-URL-based avatars may still work but are unverified."
+  ],
+  "isFixRequest": true,
+  "generatedImages": [
+    {
+      "filename": "frontend/public/assets/generated/app-logo.dim_512x512.png",
+      "description": "Minimalist chat-and-feed logo mark (flat vector, warm neutral palette).",
+      "targetWidth": 512,
+      "targetHeight": 512
+    },
+    {
+      "filename": "frontend/public/assets/generated/empty-feed.dim_900x600.png",
+      "description": "Empty state illustration for a sparse social feed (flat vector).",
+      "targetWidth": 900,
+      "targetHeight": 600
+    },
+    {
+      "filename": "frontend/public/assets/generated/empty-messages.dim_900x600.png",
+      "description": "Empty state illustration for a quiet chat/messages view (flat vector).",
+      "targetWidth": 900,
+      "targetHeight": 600
+    },
+    {
+      "filename": "frontend/public/assets/generated/header-banner.dim_1600x400.png",
+      "description": "Header banner brand image for the app UI.",
+      "targetWidth": 1600,
+      "targetHeight": 400
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "All-in-one messaging + social app (servers/channels, global feed, private chats) with media uploads",
+  "clarification_mode": "pro",
+  "clarification_rounds": 0
+}

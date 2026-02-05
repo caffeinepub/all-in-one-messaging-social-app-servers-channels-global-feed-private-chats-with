@@ -1,2 +1,3 @@
-# all-in-one-messaging-social-app-servers-channels-global-feed-private-chats-with
-Exported from Caffeine project: All-in-one messaging + social app (servers/channels, global feed, private chats) with media uploads
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

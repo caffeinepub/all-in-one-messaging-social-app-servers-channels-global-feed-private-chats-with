@@ -1,0 +1,115 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-expand-user-profiles-to-support-additional-fields-spanning-both-a-social-style-and-gamer-tag-style-e-g-bio-links-banner-status-badges-pronouns-theme-color-or-similar-and-update-the-profile-settings-page-ui-to-edit-and-save-these-fields",
+      "featureTitle": "Expand user profiles to support additional fields spanning both a social style and gamer/tag style (e.g., bio, links, banner, status, badges, pronouns, theme color or similar), and update the Profile/Settings page UI to edit and save these fields.",
+      "files": [
+        "frontend/src/components/profile/ProfileSetupModal.tsx",
+        "frontend/src/pages/ProfileSettingsPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-12"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-profile-settings-toggle-that-controls-visibility-of-the-user-s-id-principal-to-other-users-and-ensure-this-setting-is-respected-anywhere-the-app-displays-user-identity-details-including-the-quick-profile-preview-popover",
+      "featureTitle": "Add a Profile/Settings toggle that controls visibility of the user’s ID (principal) to other users, and ensure this setting is respected anywhere the app displays user identity details (including the quick profile preview popover).",
+      "files": [
+        "frontend/src/components/profile/ProfilePopover.tsx",
+        "frontend/src/pages/ProfileSettingsPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-13"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-global-username-based-typing-autocomplete-and-resolution-so-users-can-quickly-find-select-other-users-by-username-display-name-wherever-user-selection-is-relevant-at-minimum-starting-a-dm-selecting-recipients-if-applicable-and-composing-messages-posts-for-mention-style-selection-if-supported",
+      "featureTitle": "Implement global username-based typing/autocomplete and resolution so users can quickly find/select other users by username/display name wherever user selection is relevant (at minimum: starting a DM, selecting recipients if applicable, and composing messages/posts for @-mention style selection if supported).",
+      "files": [
+        "frontend/src/components/dms/DmComposer.tsx",
+        "frontend/src/components/dms/StartDmForm.tsx",
+        "frontend/src/components/messages/MessageComposer.tsx",
+        "frontend/src/components/users/UserAutocompleteInput.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-14"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-quick-profile-preview-popover-modal-that-appears-when-clicking-a-user-s-name-or-avatar-in-message-contexts-channel-messages-and-dms-at-minimum-showing-key-profile-info-avatar-display-name-and-newly-added-profile-fields-as-appropriate-while-respecting-the-user-id-visibility-setting",
+      "featureTitle": "Add a quick profile preview popover/modal that appears when clicking a user’s name or avatar in message contexts (channel messages and DMs at minimum), showing key profile info (avatar, display name, and newly added profile fields as appropriate) while respecting the user ID visibility setting.",
+      "files": [
+        "frontend/src/components/feed/PostItem.tsx",
+        "frontend/src/components/messages/MessageItem.tsx",
+        "frontend/src/components/profile/ProfilePopover.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-15"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-fix-the-profile-avatar-image-upload-flow-so-that-uploading-an-image-for-a-profile-reliably-works-end-to-end-profile-settings-page-and-any-initial-profile-setup-modal-including-proper-validation-upload-success-feedback-persistence-and-display-via-the-existing-avatar-rendering-logic",
+      "featureTitle": "Fix the profile avatar image upload flow so that uploading an image for a profile reliably works end-to-end (Profile Settings page and any initial profile setup modal), including proper validation, upload success feedback, persistence, and display via the existing avatar rendering logic.",
+      "files": [
+        "frontend/src/components/profile/AvatarUploader.tsx",
+        "frontend/src/components/profile/ProfileSetupModal.tsx",
+        "frontend/src/components/profile/UserAvatar.tsx",
+        "frontend/src/pages/ProfileSettingsPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-16"
+      ],
+      "confidence": "high"
+    }
+  ]
+}
