@@ -39,12 +39,23 @@ export const NewServerParams = IDL.Record({ 'name' : IDL.Text });
 export const ServerInfo = IDL.Record({
   'id' : IDL.Text,
   'owner' : IDL.Text,
+  'ownerPrincipal' : IDL.Principal,
   'name' : IDL.Text,
 });
-export const UserProfile = IDL.Record({
+export const FieldVisibility = IDL.Variant({
+  'privateVisibility' : IDL.Null,
+  'publicVisibility' : IDL.Null,
+});
+export const ExtendedUserProfile = IDL.Record({
+  'bio' : IDL.Text,
   'displayName' : IDL.Text,
+  'joinDate' : IDL.Int,
+  'displayNameVisibility' : FieldVisibility,
+  'bioVisibility' : FieldVisibility,
   'avatarUrl' : IDL.Opt(IDL.Text),
+  'avatarVisibility' : FieldVisibility,
   'avatarAttachment' : IDL.Opt(Attachment),
+  'joinDateVisibility' : FieldVisibility,
 });
 export const Message = IDL.Record({
   'id' : IDL.Text,
@@ -60,6 +71,18 @@ export const ChannelView = IDL.Record({
   'messages' : IDL.Vec(Message),
   'name' : IDL.Text,
   'createdAt' : IDL.Int,
+});
+export const ProfileVisibilityStatus = IDL.Record({
+  'bio' : FieldVisibility,
+  'displayName' : FieldVisibility,
+  'joinDate' : FieldVisibility,
+  'avatar' : FieldVisibility,
+});
+export const PublicUserProfile = IDL.Record({
+  'bio' : IDL.Text,
+  'displayName' : IDL.Text,
+  'joinDate' : IDL.Int,
+  'avatarUrl' : IDL.Opt(IDL.Text),
 });
 export const UserSearchResult = IDL.Record({
   'principal' : IDL.Principal,
@@ -111,7 +134,11 @@ export const idlService = IDL.Service({
   'editServer' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'getAllChannels' : IDL.Func([IDL.Text], [IDL.Vec(ChannelInfo)], ['query']),
   'getAllServers' : IDL.Func([], [IDL.Vec(ServerInfo)], ['query']),
-  'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+  'getCallerUserProfile' : IDL.Func(
+      [],
+      [IDL.Opt(ExtendedUserProfile)],
+      ['query'],
+    ),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getChannel' : IDL.Func(
       [IDL.Text, IDL.Text],
@@ -140,14 +167,19 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'getOlderPosts' : IDL.Func([IDL.Int, IDL.Nat], [IDL.Vec(Post)], ['query']),
+  'getProfileVisibility' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Opt(ProfileVisibilityStatus)],
+      ['query'],
+    ),
   'getServer' : IDL.Func([IDL.Text], [IDL.Opt(ServerInfo)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
-      [IDL.Opt(UserProfile)],
+      [IDL.Opt(PublicUserProfile)],
       ['query'],
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
-  'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+  'saveCallerUserProfile' : IDL.Func([ExtendedUserProfile], [], []),
   'searchUsers' : IDL.Func([IDL.Text], [IDL.Vec(UserSearchResult)], ['query']),
   'sendDirectMessage' : IDL.Func(
       [IDL.Principal, IDL.Text, IDL.Vec(Attachment), IDL.Opt(IDL.Text)],
@@ -157,6 +189,11 @@ export const idlService = IDL.Service({
   'sendMessage' : IDL.Func(
       [IDL.Text, IDL.Text, IDL.Text, IDL.Vec(Attachment), IDL.Opt(IDL.Text)],
       [Message],
+      [],
+    ),
+  'updateProfileFieldVisibility' : IDL.Func(
+      [IDL.Text, FieldVisibility],
+      [],
       [],
     ),
   'uploadAttachment' : IDL.Func(
@@ -200,12 +237,23 @@ export const idlFactory = ({ IDL }) => {
   const ServerInfo = IDL.Record({
     'id' : IDL.Text,
     'owner' : IDL.Text,
+    'ownerPrincipal' : IDL.Principal,
     'name' : IDL.Text,
   });
-  const UserProfile = IDL.Record({
+  const FieldVisibility = IDL.Variant({
+    'privateVisibility' : IDL.Null,
+    'publicVisibility' : IDL.Null,
+  });
+  const ExtendedUserProfile = IDL.Record({
+    'bio' : IDL.Text,
     'displayName' : IDL.Text,
+    'joinDate' : IDL.Int,
+    'displayNameVisibility' : FieldVisibility,
+    'bioVisibility' : FieldVisibility,
     'avatarUrl' : IDL.Opt(IDL.Text),
+    'avatarVisibility' : FieldVisibility,
     'avatarAttachment' : IDL.Opt(Attachment),
+    'joinDateVisibility' : FieldVisibility,
   });
   const Message = IDL.Record({
     'id' : IDL.Text,
@@ -221,6 +269,18 @@ export const idlFactory = ({ IDL }) => {
     'messages' : IDL.Vec(Message),
     'name' : IDL.Text,
     'createdAt' : IDL.Int,
+  });
+  const ProfileVisibilityStatus = IDL.Record({
+    'bio' : FieldVisibility,
+    'displayName' : FieldVisibility,
+    'joinDate' : FieldVisibility,
+    'avatar' : FieldVisibility,
+  });
+  const PublicUserProfile = IDL.Record({
+    'bio' : IDL.Text,
+    'displayName' : IDL.Text,
+    'joinDate' : IDL.Int,
+    'avatarUrl' : IDL.Opt(IDL.Text),
   });
   const UserSearchResult = IDL.Record({
     'principal' : IDL.Principal,
@@ -272,7 +332,11 @@ export const idlFactory = ({ IDL }) => {
     'editServer' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'getAllChannels' : IDL.Func([IDL.Text], [IDL.Vec(ChannelInfo)], ['query']),
     'getAllServers' : IDL.Func([], [IDL.Vec(ServerInfo)], ['query']),
-    'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
+    'getCallerUserProfile' : IDL.Func(
+        [],
+        [IDL.Opt(ExtendedUserProfile)],
+        ['query'],
+      ),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getChannel' : IDL.Func(
         [IDL.Text, IDL.Text],
@@ -301,14 +365,19 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'getOlderPosts' : IDL.Func([IDL.Int, IDL.Nat], [IDL.Vec(Post)], ['query']),
+    'getProfileVisibility' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Opt(ProfileVisibilityStatus)],
+        ['query'],
+      ),
     'getServer' : IDL.Func([IDL.Text], [IDL.Opt(ServerInfo)], ['query']),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
-        [IDL.Opt(UserProfile)],
+        [IDL.Opt(PublicUserProfile)],
         ['query'],
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
-    'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
+    'saveCallerUserProfile' : IDL.Func([ExtendedUserProfile], [], []),
     'searchUsers' : IDL.Func(
         [IDL.Text],
         [IDL.Vec(UserSearchResult)],
@@ -322,6 +391,11 @@ export const idlFactory = ({ IDL }) => {
     'sendMessage' : IDL.Func(
         [IDL.Text, IDL.Text, IDL.Text, IDL.Vec(Attachment), IDL.Opt(IDL.Text)],
         [Message],
+        [],
+      ),
+    'updateProfileFieldVisibility' : IDL.Func(
+        [IDL.Text, FieldVisibility],
+        [],
         [],
       ),
     'uploadAttachment' : IDL.Func(

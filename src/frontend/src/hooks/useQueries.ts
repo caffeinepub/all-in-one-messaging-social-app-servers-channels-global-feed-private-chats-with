@@ -2,14 +2,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
 import { POLLING_INTERVAL_ACTIVE } from '../constants/polling';
 import type { Principal } from '@icp-sdk/core/principal';
-import type { UserProfile, ServerInfo, ChannelInfo, Post, Message, Attachment, UserSearchResult } from '../backend';
+import type { ExtendedUserProfile, PublicUserProfile, ServerInfo, ChannelInfo, Post, Message, Attachment, UserSearchResult, FieldVisibility } from '../backend';
 import { ExternalBlob } from '../backend';
 
 // User Profile Queries
 export function useGetCallerUserProfile() {
   const { actor, isFetching: actorFetching } = useActor();
 
-  const query = useQuery<UserProfile | null>({
+  const query = useQuery<ExtendedUserProfile | null>({
     queryKey: ['currentUserProfile'],
     queryFn: async () => {
       if (!actor) throw new Error('Actor not available');
@@ -29,7 +29,7 @@ export function useGetCallerUserProfile() {
 export function useGetUserProfile(user: Principal) {
   const { actor, isFetching } = useActor();
 
-  return useQuery<UserProfile | null>({
+  return useQuery<PublicUserProfile | null>({
     queryKey: ['userProfile', user.toString()],
     queryFn: async () => {
       if (!actor) return null;
@@ -44,9 +44,24 @@ export function useSaveCallerUserProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (profile: UserProfile) => {
+    mutationFn: async (profile: ExtendedUserProfile) => {
       if (!actor) throw new Error('Actor not available');
       return actor.saveCallerUserProfile(profile);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+    },
+  });
+}
+
+export function useUpdateProfileFieldVisibility() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (params: { field: string; visibility: FieldVisibility }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.updateProfileFieldVisibility(params.field, params.visibility);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });

@@ -101,7 +101,7 @@ export default function ServerList({
       <ScrollArea className="flex-1">
         <div className="p-2 space-y-1">
           {servers.map((server) => {
-            const isOwner = currentUserPrincipal === server.owner;
+            const isOwner = currentUserPrincipal === server.ownerPrincipal.toString();
             const isEditing = editingServerId === server.id;
 
             return (

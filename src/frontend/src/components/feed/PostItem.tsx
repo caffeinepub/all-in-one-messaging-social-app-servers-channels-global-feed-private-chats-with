@@ -4,6 +4,7 @@ import { useGetUserProfile, useDeletePost } from '../../hooks/useQueries';
 import { useInternetIdentity } from '../../hooks/useInternetIdentity';
 import UserAvatar from '../profile/UserAvatar';
 import ProfilePopover from '../profile/ProfilePopover';
+import MentionText from '../text/MentionText';
 import { formatDistanceToNow } from 'date-fns';
 import type { Post } from '../../backend';
 import { ExternalBlob } from '../../backend';
@@ -18,7 +19,7 @@ export default function PostItem({ post }: PostItemProps) {
   const { identity } = useInternetIdentity();
   const { data: authorProfile } = useGetUserProfile(post.authorPrincipal);
   const deletePost = useDeletePost();
-  const displayName = authorProfile?.displayName || post.author || 'Anonymous';
+  const displayName = authorProfile?.displayName || 'Anonymous';
 
   const timestamp = new Date(Number(post.timestamp) / 1_000_000);
   const timeAgo = formatDistanceToNow(timestamp, { addSuffix: true });
@@ -67,7 +68,11 @@ export default function PostItem({ post }: PostItemProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {post.content && <p className="whitespace-pre-wrap break-words">{post.content}</p>}
+        {post.content && (
+          <p className="whitespace-pre-wrap break-words">
+            <MentionText content={post.content} />
+          </p>
+        )}
         {post.imageUrl && (
           <img
             src={post.imageUrl}

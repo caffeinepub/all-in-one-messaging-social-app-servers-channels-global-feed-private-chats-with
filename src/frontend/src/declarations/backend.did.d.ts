@@ -18,7 +18,20 @@ export interface ChannelView {
   'name' : string,
   'createdAt' : bigint,
 }
+export interface ExtendedUserProfile {
+  'bio' : string,
+  'displayName' : string,
+  'joinDate' : bigint,
+  'displayNameVisibility' : FieldVisibility,
+  'bioVisibility' : FieldVisibility,
+  'avatarUrl' : [] | [string],
+  'avatarVisibility' : FieldVisibility,
+  'avatarAttachment' : [] | [Attachment],
+  'joinDateVisibility' : FieldVisibility,
+}
 export type ExternalBlob = Uint8Array;
+export type FieldVisibility = { 'privateVisibility' : null } |
+  { 'publicVisibility' : null };
 export interface Message {
   'id' : string,
   'content' : string,
@@ -38,11 +51,23 @@ export interface Post {
   'attachments' : Array<Attachment>,
   'authorPrincipal' : Principal,
 }
-export interface ServerInfo { 'id' : string, 'owner' : string, 'name' : string }
-export interface UserProfile {
+export interface ProfileVisibilityStatus {
+  'bio' : FieldVisibility,
+  'displayName' : FieldVisibility,
+  'joinDate' : FieldVisibility,
+  'avatar' : FieldVisibility,
+}
+export interface PublicUserProfile {
+  'bio' : string,
   'displayName' : string,
+  'joinDate' : bigint,
   'avatarUrl' : [] | [string],
-  'avatarAttachment' : [] | [Attachment],
+}
+export interface ServerInfo {
+  'id' : string,
+  'owner' : string,
+  'ownerPrincipal' : Principal,
+  'name' : string,
 }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
@@ -91,7 +116,7 @@ export interface _SERVICE {
   'editServer' : ActorMethod<[string, string], undefined>,
   'getAllChannels' : ActorMethod<[string], Array<ChannelInfo>>,
   'getAllServers' : ActorMethod<[], Array<ServerInfo>>,
-  'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
+  'getCallerUserProfile' : ActorMethod<[], [] | [ExtendedUserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getChannel' : ActorMethod<[string, string], [] | [ChannelView]>,
   'getDirectMessages' : ActorMethod<[Principal, bigint], Array<Message>>,
@@ -106,10 +131,14 @@ export interface _SERVICE {
     Array<Message>
   >,
   'getOlderPosts' : ActorMethod<[bigint, bigint], Array<Post>>,
+  'getProfileVisibility' : ActorMethod<
+    [Principal],
+    [] | [ProfileVisibilityStatus]
+  >,
   'getServer' : ActorMethod<[string], [] | [ServerInfo]>,
-  'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'getUserProfile' : ActorMethod<[Principal], [] | [PublicUserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
-  'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'saveCallerUserProfile' : ActorMethod<[ExtendedUserProfile], undefined>,
   'searchUsers' : ActorMethod<[string], Array<UserSearchResult>>,
   'sendDirectMessage' : ActorMethod<
     [Principal, string, Array<Attachment>, [] | [string]],
@@ -118,6 +147,10 @@ export interface _SERVICE {
   'sendMessage' : ActorMethod<
     [string, string, string, Array<Attachment>, [] | [string]],
     Message
+  >,
+  'updateProfileFieldVisibility' : ActorMethod<
+    [string, FieldVisibility],
+    undefined
   >,
   'uploadAttachment' : ActorMethod<[ExternalBlob, string, bigint], Attachment>,
 }

@@ -10,7 +10,9 @@ import AccessControl "authorization/access-control";
 import Iter "mo:core/Iter";
 import MixinStorage "blob-storage/Mixin";
 import MixinAuthorization "authorization/MixinAuthorization";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   type Attachment = Storage.ExternalBlob;
 
@@ -57,16 +59,41 @@ actor {
     imageUrl : ?Text;
   };
 
-  public type UserProfile = {
+  public type FieldVisibility = {
+    #publicVisibility;
+    #privateVisibility;
+  };
+
+  public type ExtendedUserProfile = {
     displayName : Text;
+    displayNameVisibility : FieldVisibility;
     avatarUrl : ?Text;
     avatarAttachment : ?Attachment;
+    avatarVisibility : FieldVisibility;
+    bio : Text;
+    bioVisibility : FieldVisibility;
+    joinDate : Int;
+    joinDateVisibility : FieldVisibility;
+  };
+
+  public type PublicUserProfile = {
+    displayName : Text;
+    avatarUrl : ?Text;
+    bio : Text;
+    joinDate : Int;
+  };
+
+  public type ProfileVisibilityStatus = {
+    displayName : FieldVisibility;
+    avatar : FieldVisibility;
+    bio : FieldVisibility;
+    joinDate : FieldVisibility;
   };
 
   // Persistent storage
   let serverMap = Map.empty<Text, Server>();
   let globalFeed = List.empty<Post>();
-  let userProfiles = Map.empty<Principal, UserProfile>();
+  let userProfiles = Map.empty<Principal, ExtendedUserProfile>();
   let dmConversations = Map.empty<Text, List.List<Message>>();
   let deletedMessages = Map.empty<Text, Bool>();
   let deletedPosts = Map.empty<Text, Bool>();
@@ -81,6 +108,7 @@ actor {
     id : Text;
     name : Text;
     owner : Text;
+    ownerPrincipal : Principal;
   };
 
   public type ChannelInfo = {
@@ -97,7 +125,6 @@ actor {
     displayName : Text;
   };
 
-  // Helper function to create DM conversation key
   func getDMKey(user1 : Principal, user2 : Principal) : Text {
     let p1 = user1.toText();
     let p2 = user2.toText();
@@ -109,29 +136,106 @@ actor {
   };
 
   // User Profile Management
-  public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
+  public query ({ caller }) func getCallerUserProfile() : async ?ExtendedUserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can view profiles");
     };
     userProfiles.get(caller);
   };
 
-  public query ({ caller }) func getUserProfile(user : Principal) : async ?UserProfile {
-    // Anyone can view user profiles (for displaying authors)
-    userProfiles.get(user);
+  // Get public or owned profile with proper field filtering
+  public query ({ caller }) func getUserProfile(user : Principal) : async ?PublicUserProfile {
+    let profile = switch (userProfiles.get(user)) {
+      case (null) { return null };
+      case (?p) { p };
+    };
+
+    ?{
+      displayName = if (profile.displayNameVisibility == #publicVisibility or caller == user) {
+        profile.displayName;
+      } else {
+        "Private";
+      };
+      avatarUrl = if (profile.avatarVisibility == #publicVisibility or caller == user) {
+        profile.avatarUrl;
+      } else {
+        null;
+      };
+      bio = if (profile.bioVisibility == #publicVisibility or caller == user) {
+        profile.bio;
+      } else {
+        "Private";
+      };
+      joinDate = if (profile.joinDateVisibility == #publicVisibility or caller == user) {
+        profile.joinDate;
+      } else {
+        0;
+      };
+    };
   };
 
-  public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
+  // Get all profile visibilities (for owner's view only)
+  public query ({ caller }) func getProfileVisibility(user : Principal) : async ?ProfileVisibilityStatus {
+    if (caller != user) {
+      Runtime.trap("Unauthorized: Can only view your own profile visibility settings");
+    };
+
+    switch (userProfiles.get(user)) {
+      case (null) { null };
+      case (?profile) {
+        ?{
+          displayName = profile.displayNameVisibility;
+          avatar = profile.avatarVisibility;
+          bio = profile.bioVisibility;
+          joinDate = profile.joinDateVisibility;
+        };
+      };
+    };
+  };
+
+  public shared ({ caller }) func saveCallerUserProfile(profile : ExtendedUserProfile) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can save profiles");
     };
 
-    // Validate displayName is not empty
     if (profile.displayName.size() == 0) {
       Runtime.trap("displayName is required");
     };
 
-    userProfiles.add(caller, profile);
+    let profileWithJoinDate = switch (userProfiles.get(caller)) {
+      case (null) {
+        { profile with joinDate = Time.now() };
+      };
+      case (?existingProfile) {
+        { profile with joinDate = existingProfile.joinDate };
+      };
+    };
+
+    userProfiles.add(caller, profileWithJoinDate);
+  };
+
+  public shared ({ caller }) func updateProfileFieldVisibility(field : Text, visibility : FieldVisibility) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can update profile visibility");
+    };
+
+    switch (userProfiles.get(caller)) {
+      case (null) {
+        Runtime.trap("User profile does not exist");
+      };
+      case (?profile) {
+        let updatedProfile = switch (field) {
+          case ("displayName") { { profile with displayNameVisibility = visibility } };
+          case ("avatar") { { profile with avatarVisibility = visibility } };
+          case ("bio") { { profile with bioVisibility = visibility } };
+          case ("joinDate") { { profile with joinDateVisibility = visibility } };
+          case (_) {
+            Runtime.trap("Invalid profile field");
+          };
+        };
+        userProfiles.add(caller, updatedProfile);
+      };
+    };
   };
 
   public query ({ caller }) func searchUsers(searchTerm : Text) : async [UserSearchResult] {
@@ -180,6 +284,7 @@ actor {
       id = serverId;
       name = params.name;
       owner = profile.displayName;
+      ownerPrincipal = caller;
     };
   };
 
@@ -220,13 +325,13 @@ actor {
 
   public query ({ caller }) func getServer(serverId : Text) : async ?ServerInfo {
     serverMap.get(serverId).map(func(server) {
-      { id = server.id; name = server.name; owner = server.owner };
+      { id = server.id; name = server.name; owner = server.owner; ownerPrincipal = server.ownerPrincipal };
     });
   };
 
   public query ({ caller }) func getAllServers() : async [ServerInfo] {
     serverMap.values().toArray().map(func(server) {
-      { id = server.id; name = server.name; owner = server.owner };
+      { id = server.id; name = server.name; owner = server.owner; ownerPrincipal = server.ownerPrincipal };
     });
   };
 
@@ -328,7 +433,6 @@ actor {
     };
   };
 
-  // Message Retrieval
   public query ({ caller }) func getChannel(serverId : Text, channelId : Text) : async ?ChannelView {
     switch (serverMap.get(serverId)) {
       case (null) { null };
@@ -427,15 +531,14 @@ actor {
     };
   };
 
-  // Messaging & Posting
   public shared ({ caller }) func sendMessage(serverId : Text, channelId : Text, content : Text, attachments : [Attachment], imageUrl : ?Text) : async Message {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can send messages");
     };
 
-    let profile = switch (userProfiles.get(caller)) {
+    switch (userProfiles.get(caller)) {
       case (null) { Runtime.trap("User profile required before sending messages") };
-      case (?p) { p };
+      case (?_) {};
     };
 
     switch (serverMap.get(serverId)) {
@@ -446,7 +549,7 @@ actor {
           case (?channel) {
             let newMessage = {
               id = channelId # "msg" # serverId # "_" # messageCounter.toText();
-              author = profile.displayName;
+              author = caller.toText();
               authorPrincipal = caller;
               content;
               timestamp = Time.now();
@@ -474,9 +577,9 @@ actor {
       Runtime.trap("Unauthorized: Only users can send direct messages");
     };
 
-    let profile = switch (userProfiles.get(caller)) {
+    switch (userProfiles.get(caller)) {
       case (null) { Runtime.trap("User profile required before sending messages") };
-      case (?p) { p };
+      case (?_) {};
     };
 
     // Verify recipient exists
@@ -493,7 +596,7 @@ actor {
 
     let newMessage = {
       id = dmKey # "_" # messageCounter.toText();
-      author = profile.displayName;
+      author = caller.toText();
       authorPrincipal = caller;
       content;
       timestamp = Time.now();
@@ -512,14 +615,14 @@ actor {
       Runtime.trap("Unauthorized: Only users can create posts");
     };
 
-    let profile = switch (userProfiles.get(caller)) {
+    switch (userProfiles.get(caller)) {
       case (null) { Runtime.trap("User profile required before creating posts") };
-      case (?p) { p };
+      case (?_) {};
     };
 
     let newPost = {
       id = "post" # postCounter.toText();
-      author = profile.displayName;
+      author = caller.toText();
       authorPrincipal = caller;
       content;
       timestamp = Time.now();

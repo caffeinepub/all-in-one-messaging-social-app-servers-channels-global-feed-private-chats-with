@@ -39,7 +39,7 @@ export default function ChannelList({
   const editChannel = useEditChannel();
   const deleteChannel = useDeleteChannel();
 
-  const isOwner = serverOwnerPrincipal === serverInfo.owner;
+  const isOwner = serverOwnerPrincipal === serverInfo.ownerPrincipal.toString();
 
   const handleEditStart = (channelId: string, channelName: string) => {
     setEditingChannelId(channelId);
@@ -77,17 +77,21 @@ export default function ChannelList({
     <div className="h-full flex flex-col">
       <div className="p-4 border-b border-border">
         <h2 className="font-semibold text-lg mb-3">Channels</h2>
-        {showCreateForm ? (
-          <CreateChannelForm
-            serverId={serverId}
-            onSuccess={() => setShowCreateForm(false)}
-            onCancel={() => setShowCreateForm(false)}
-          />
-        ) : (
-          <Button onClick={() => setShowCreateForm(true)} variant="outline" size="sm" className="w-full">
-            <Plus className="h-4 w-4 mr-2" />
-            New Channel
-          </Button>
+        {isOwner && (
+          <>
+            {showCreateForm ? (
+              <CreateChannelForm
+                serverId={serverId}
+                onSuccess={() => setShowCreateForm(false)}
+                onCancel={() => setShowCreateForm(false)}
+              />
+            ) : (
+              <Button onClick={() => setShowCreateForm(true)} variant="outline" size="sm" className="w-full">
+                <Plus className="h-4 w-4 mr-2" />
+                New Channel
+              </Button>
+            )}
+          </>
         )}
       </div>
       <ScrollArea className="flex-1">

@@ -2,31 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-expand-user-profiles-to-support-additional-fields-spanning-both-a-social-style-and-gamer-tag-style-e-g-bio-links-banner-status-badges-pronouns-theme-color-or-similar-and-update-the-profile-settings-page-ui-to-edit-and-save-these-fields",
-      "featureTitle": "Expand user profiles to support additional fields spanning both a social style and gamer/tag style (e.g., bio, links, banner, status, badges, pronouns, theme color or similar), and update the Profile/Settings page UI to edit and save these fields.",
-      "files": [
-        "frontend/src/components/profile/ProfileSetupModal.tsx",
-        "frontend/src/pages/ProfileSettingsPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-12"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-profile-settings-toggle-that-controls-visibility-of-the-user-s-id-principal-to-other-users-and-ensure-this-setting-is-respected-anywhere-the-app-displays-user-identity-details-including-the-quick-profile-preview-popover",
-      "featureTitle": "Add a Profile/Settings toggle that controls visibility of the user’s ID (principal) to other users, and ensure this setting is respected anywhere the app displays user identity details (including the quick profile preview popover).",
+      "featureId": "feature-remove-any-public-display-of-user-principal-ids-across-the-entire-ui-including-public-profiles-profile-popovers-post-message-author-areas-server-lists-dm-lists-and-any-other-user-surfaces-the-app-must-never-show-another-user-s-principal-id-anywhere-in-the-ui",
+      "featureTitle": "Remove any public display of user Principal IDs across the entire UI (including public profiles, profile popovers, post/message author areas, server lists, DM lists, and any other user surfaces). The app must never show another user’s Principal ID anywhere in the UI.",
       "files": [
         "frontend/src/components/profile/ProfilePopover.tsx",
+        "frontend/src/components/servers/ServerList.tsx",
         "frontend/src/pages/ProfileSettingsPage.tsx"
       ],
       "components": [
@@ -39,18 +19,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-13"
+        "REQ-18"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-global-username-based-typing-autocomplete-and-resolution-so-users-can-quickly-find-select-other-users-by-username-display-name-wherever-user-selection-is-relevant-at-minimum-starting-a-dm-selecting-recipients-if-applicable-and-composing-messages-posts-for-mention-style-selection-if-supported",
-      "featureTitle": "Implement global username-based typing/autocomplete and resolution so users can quickly find/select other users by username/display name wherever user selection is relevant (at minimum: starting a DM, selecting recipients if applicable, and composing messages/posts for @-mention style selection if supported).",
+      "featureId": "feature-in-the-signed-in-user-s-profile-settings-page-add-a-user-only-control-to-reveal-hide-their-own-principal-id-hidden-by-default-on-load-and-include-a-copy-to-clipboard-action-do-not-show-the-principal-id-on-this-page-unless-the-user-explicitly-chooses-to-reveal-it",
+      "featureTitle": "In the signed-in user’s Profile & Settings page, add a user-only control to reveal/hide their own Principal ID (hidden by default on load), and include a copy-to-clipboard action. Do not show the Principal ID on this page unless the user explicitly chooses to reveal it.",
       "files": [
-        "frontend/src/components/dms/DmComposer.tsx",
-        "frontend/src/components/dms/StartDmForm.tsx",
-        "frontend/src/components/messages/MessageComposer.tsx",
-        "frontend/src/components/users/UserAutocompleteInput.tsx"
+        "frontend/src/pages/ProfileSettingsPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -62,13 +39,34 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-14"
+        "REQ-19"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-a-quick-profile-preview-popover-modal-that-appears-when-clicking-a-user-s-name-or-avatar-in-message-contexts-channel-messages-and-dms-at-minimum-showing-key-profile-info-avatar-display-name-and-newly-added-profile-fields-as-appropriate-while-respecting-the-user-id-visibility-setting",
-      "featureTitle": "Add a quick profile preview popover/modal that appears when clicking a user’s name or avatar in message contexts (channel messages and DMs at minimum), showing key profile info (avatar, display name, and newly added profile fields as appropriate) while respecting the user ID visibility setting.",
+      "featureId": "feature-update-the-profile-settings-ui-to-allow-the-signed-in-user-to-edit-bio-and-manage-per-field-public-private-visibility-toggles-for-all-supported-profile-fields-all-user-facing-text-for-these-controls-must-be-in-english",
+      "featureTitle": "Update the Profile & Settings UI to allow the signed-in user to edit bio and manage per-field public/private visibility toggles for all supported profile fields. All user-facing text for these controls must be in English.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/ProfileSettingsPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-21"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-all-profile-display-surfaces-including-the-profile-popover-and-any-public-profile-ui-to-show-meaningful-public-profile-information-e-g-display-name-avatar-bio-join-date-when-public-rather-than-showing-only-a-principal-id-do-not-display-non-public-fields-to-other-users",
+      "featureTitle": "Update all profile display surfaces (including the profile popover and any public profile UI) to show meaningful public profile information (e.g., display name, avatar, bio, join date when public) rather than showing only a Principal ID. Do not display non-public fields to other users.",
       "files": [
         "frontend/src/components/feed/PostItem.tsx",
         "frontend/src/components/messages/MessageItem.tsx",
@@ -84,18 +82,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-15"
+        "REQ-22"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-fix-the-profile-avatar-image-upload-flow-so-that-uploading-an-image-for-a-profile-reliably-works-end-to-end-profile-settings-page-and-any-initial-profile-setup-modal-including-proper-validation-upload-success-feedback-persistence-and-display-via-the-existing-avatar-rendering-logic",
-      "featureTitle": "Fix the profile avatar image upload flow so that uploading an image for a profile reliably works end-to-end (Profile Settings page and any initial profile setup modal), including proper validation, upload success feedback, persistence, and display via the existing avatar rendering logic.",
+      "featureId": "feature-fix-server-management-controls-visibility-so-that-server-edit-delete-and-related-management-actions-appear-for-the-actual-server-owner-ensure-ownership-checks-are-based-on-the-server-owner-principal-and-the-frontend-permission-checks-use-the-owner-principal-returned-by-the-backend",
+      "featureTitle": "Fix server management controls visibility so that server edit/delete (and related management) actions appear for the actual server owner. Ensure ownership checks are based on the server owner Principal and the frontend permission checks use the owner Principal returned by the backend.",
       "files": [
-        "frontend/src/components/profile/AvatarUploader.tsx",
-        "frontend/src/components/profile/ProfileSetupModal.tsx",
-        "frontend/src/components/profile/UserAvatar.tsx",
-        "frontend/src/pages/ProfileSettingsPage.tsx"
+        "frontend/src/components/channels/ChannelList.tsx",
+        "frontend/src/components/servers/ServerList.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -107,7 +103,30 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-16"
+        "REQ-23"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-enhance-mention-ux-by-formatting-mentions-in-rendered-post-message-text-and-making-mentions-clickable-to-open-a-user-profile-surface-e-g-profile-popover-mentions-must-resolve-to-the-correct-user-identity-principal-for-profile-lookup-without-exposing-principal-ids-in-the-ui",
+      "featureTitle": "Enhance @mention UX by formatting mentions in rendered post/message text and making mentions clickable to open a user profile surface (e.g., profile popover). Mentions must resolve to the correct user identity (Principal) for profile lookup, without exposing Principal IDs in the UI.",
+      "files": [
+        "frontend/src/components/feed/PostItem.tsx",
+        "frontend/src/components/messages/MessageItem.tsx",
+        "frontend/src/components/text/MentionText.tsx",
+        "frontend/src/hooks/useMentionResolver.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-24"
       ],
       "confidence": "high"
     }

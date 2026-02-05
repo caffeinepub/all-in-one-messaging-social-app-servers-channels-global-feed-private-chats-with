@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ExternalBlob } from '../../backend';
-import type { UserProfile } from '../../backend';
+import type { ExtendedUserProfile, PublicUserProfile } from '../../backend';
 
 interface UserAvatarProps {
   displayName: string;
-  profile?: UserProfile | null;
+  profile?: ExtendedUserProfile | PublicUserProfile | null;
   className?: string;
 }
 
@@ -13,7 +13,7 @@ export default function UserAvatar({ displayName, profile, className }: UserAvat
   const avatarSrc = useMemo(() => {
     if (!profile) return undefined;
 
-    if (profile.avatarAttachment) {
+    if ('avatarAttachment' in profile && profile.avatarAttachment) {
       try {
         const buffer = new ArrayBuffer(profile.avatarAttachment.byteLength);
         const uint8Array = new Uint8Array(buffer);

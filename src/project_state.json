@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 27,
+  "projectStateVersion": 40,
   "summary": "Implemented an MVP combined messaging/social app with Internet Identity auth, user profiles, global feed, Discord-style servers/channels, 1:1 DMs, polling-based near-real-time updates, and shared media uploads rendered across posts and messages.",
   "existing_features": [
     {
@@ -133,53 +133,103 @@
       "version": 1
     },
     {
-      "id": "feature-expand-user-profiles-to-support-additional-fields-spanning-both-a-social-style-and-gamer-tag-style-e-g-bio-links-banner-status-badges-pronouns-theme-color-or-similar-and-update-the-profile-settings-page-ui-to-edit-and-save-these-fields",
-      "title": "Expand user profiles to support additional fields spanning both a social style and gamer/tag style (e.g., bio, links, banner, status, badges, pronouns, theme color or similar), and update the Profile/Settings page UI to edit and save these fields.",
+      "id": "IF-11",
+      "title": "Auth gate/redirect protection for authenticated-only pages (e.g., Servers)",
+      "synonyms": [
+        "auth gate",
+        "protected routes",
+        "redirect to sign-in"
+      ],
+      "description": "Unauthenticated users are blocked from accessing authenticated sections (notably Servers) via a frontend AuthGate that prompts/redirects to Internet Identity sign-in.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-12",
+      "title": "Username autocomplete/resolution for user targeting (DM start and related inputs)",
+      "synonyms": [
+        "username search",
+        "user autocomplete",
+        "username-to-principal resolution"
+      ],
+      "description": "UI supports searching/autocompleting usernames to resolve a target user/principal for actions like initiating DMs (and reusable user selection inputs).",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-13",
+      "title": "Quick profile preview popover from user identity UI",
+      "synonyms": [
+        "profile popover",
+        "user hover/click card",
+        "mini profile preview"
+      ],
+      "description": "Users can open a compact profile preview popover when interacting with a user’s name/avatar in messaging and similar contexts.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "IF-14",
+      "title": "Profile avatar handling improvements (upload flow and avatar components)",
+      "synonyms": [
+        "avatar uploader",
+        "profile image upload fix",
+        "user avatar component"
+      ],
+      "description": "Profile avatar upload/rendering flow was updated, including dedicated AvatarUploader/UserAvatar components, to improve reliability of setting and displaying avatars.",
+      "reqIds": [],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-any-public-display-of-user-principal-ids-across-the-entire-ui-including-public-profiles-profile-popovers-post-message-author-areas-server-lists-dm-lists-and-any-other-user-surfaces-the-app-must-never-show-another-user-s-principal-id-anywhere-in-the-ui",
+      "title": "Remove any public display of user Principal IDs across the entire UI (including public profiles, profile popovers, post/message author areas, server lists, DM lists, and any other user surfaces). The app must never show another user’s Principal ID anywhere in the UI.",
       "reqIds": [
-        "REQ-12"
+        "REQ-18"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-a-profile-settings-toggle-that-controls-visibility-of-the-user-s-id-principal-to-other-users-and-ensure-this-setting-is-respected-anywhere-the-app-displays-user-identity-details-including-the-quick-profile-preview-popover",
-      "title": "Add a Profile/Settings toggle that controls visibility of the user’s ID (principal) to other users, and ensure this setting is respected anywhere the app displays user identity details (including the quick profile preview popover).",
+      "id": "feature-in-the-signed-in-user-s-profile-settings-page-add-a-user-only-control-to-reveal-hide-their-own-principal-id-hidden-by-default-on-load-and-include-a-copy-to-clipboard-action-do-not-show-the-principal-id-on-this-page-unless-the-user-explicitly-chooses-to-reveal-it",
+      "title": "In the signed-in user’s Profile & Settings page, add a user-only control to reveal/hide their own Principal ID (hidden by default on load), and include a copy-to-clipboard action. Do not show the Principal ID on this page unless the user explicitly chooses to reveal it.",
       "reqIds": [
-        "REQ-13"
+        "REQ-19"
       ],
       "version": 1
     },
     {
-      "id": "feature-implement-global-username-based-typing-autocomplete-and-resolution-so-users-can-quickly-find-select-other-users-by-username-display-name-wherever-user-selection-is-relevant-at-minimum-starting-a-dm-selecting-recipients-if-applicable-and-composing-messages-posts-for-mention-style-selection-if-supported",
-      "title": "Implement global username-based typing/autocomplete and resolution so users can quickly find/select other users by username/display name wherever user selection is relevant (at minimum: starting a DM, selecting recipients if applicable, and composing messages/posts for @-mention style selection if supported).",
+      "id": "feature-update-the-profile-settings-ui-to-allow-the-signed-in-user-to-edit-bio-and-manage-per-field-public-private-visibility-toggles-for-all-supported-profile-fields-all-user-facing-text-for-these-controls-must-be-in-english",
+      "title": "Update the Profile & Settings UI to allow the signed-in user to edit bio and manage per-field public/private visibility toggles for all supported profile fields. All user-facing text for these controls must be in English.",
       "reqIds": [
-        "REQ-14"
+        "REQ-21"
       ],
       "version": 1
     },
     {
-      "id": "feature-add-a-quick-profile-preview-popover-modal-that-appears-when-clicking-a-user-s-name-or-avatar-in-message-contexts-channel-messages-and-dms-at-minimum-showing-key-profile-info-avatar-display-name-and-newly-added-profile-fields-as-appropriate-while-respecting-the-user-id-visibility-setting",
-      "title": "Add a quick profile preview popover/modal that appears when clicking a user’s name or avatar in message contexts (channel messages and DMs at minimum), showing key profile info (avatar, display name, and newly added profile fields as appropriate) while respecting the user ID visibility setting.",
+      "id": "feature-update-all-profile-display-surfaces-including-the-profile-popover-and-any-public-profile-ui-to-show-meaningful-public-profile-information-e-g-display-name-avatar-bio-join-date-when-public-rather-than-showing-only-a-principal-id-do-not-display-non-public-fields-to-other-users",
+      "title": "Update all profile display surfaces (including the profile popover and any public profile UI) to show meaningful public profile information (e.g., display name, avatar, bio, join date when public) rather than showing only a Principal ID. Do not display non-public fields to other users.",
       "reqIds": [
-        "REQ-15"
+        "REQ-22"
       ],
       "version": 1
     },
     {
-      "id": "feature-fix-the-profile-avatar-image-upload-flow-so-that-uploading-an-image-for-a-profile-reliably-works-end-to-end-profile-settings-page-and-any-initial-profile-setup-modal-including-proper-validation-upload-success-feedback-persistence-and-display-via-the-existing-avatar-rendering-logic",
-      "title": "Fix the profile avatar image upload flow so that uploading an image for a profile reliably works end-to-end (Profile Settings page and any initial profile setup modal), including proper validation, upload success feedback, persistence, and display via the existing avatar rendering logic.",
+      "id": "feature-fix-server-management-controls-visibility-so-that-server-edit-delete-and-related-management-actions-appear-for-the-actual-server-owner-ensure-ownership-checks-are-based-on-the-server-owner-principal-and-the-frontend-permission-checks-use-the-owner-principal-returned-by-the-backend",
+      "title": "Fix server management controls visibility so that server edit/delete (and related management) actions appear for the actual server owner. Ensure ownership checks are based on the server owner Principal and the frontend permission checks use the owner Principal returned by the backend.",
       "reqIds": [
-        "REQ-16"
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-mention-ux-by-formatting-mentions-in-rendered-post-message-text-and-making-mentions-clickable-to-open-a-user-profile-surface-e-g-profile-popover-mentions-must-resolve-to-the-correct-user-identity-principal-for-profile-lookup-without-exposing-principal-ids-in-the-ui",
+      "title": "Enhance @mention UX by formatting mentions in rendered post/message text and making mentions clickable to open a user profile surface (e.g., profile popover). Mentions must resolve to the correct user identity (Principal) for profile lookup, without exposing Principal IDs in the UI.",
+      "reqIds": [
+        "REQ-24"
       ],
       "version": 1
     }
   ],
   "new_feature_requests": [
-    {
-      "id": "AR-1",
-      "summary": "Require sign-in to access the Servers page (auth gate / redirect to sign-in)",
-      "reqIds": [],
-      "status": "pending"
-    },
     {
       "id": "AR-2",
       "summary": "Profile image: let users choose between uploading an image or providing an image URL",
@@ -217,12 +267,6 @@
       "status": "pending"
     },
     {
-      "id": "AR-8",
-      "summary": "DM initiation: allow searching by username to start a private message (for now)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
       "id": "AR-9",
       "summary": "Servers/channels customization: support configuring server + channel details beyond basic edit/delete (e.g., descriptions/topics, icons/banners, settings)",
       "reqIds": [],
@@ -254,23 +298,123 @@
     },
     {
       "id": "AR-14",
-      "summary": "Add a quick profile preview popover when clicking a user’s name/avatar in messages (and similar contexts)",
+      "summary": "Privacy: hide users’ principal IDs everywhere by default; only reveal in own Profile via an explicit user action (e.g., “Show my ID” button)",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-15",
-      "summary": "Add server and channel customization beyond basic create/edit/delete, including fields for server (name, description, icon, banner, settings as supported) and channel (name, topic/description, icon, settings as supported), with corresponding backend persistence and frontend forms to view and update these fields.",
+      "summary": "Profiles: show more than principal ID on user profiles (display name/avatar and other basic public profile fields)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "@mention UX: make mentions richer (e.g., autocomplete picker, highlight/format, and/or clickable mentions to open profile)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Add a notification center/popup surface (placeholder for future integrations like mentions/activity)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Profiles: allow users to control visibility (public/private) of additional profile fields (e.g., bio, join date, etc.) beyond display name/avatar",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Profiles: add bio + join date fields and allow users to toggle public/private visibility for all profile fields (including display name/avatar/bio/join date)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-20",
+      "summary": "Privacy: remove principal ID display from all public UI surfaces; allow viewing principal only in the signed-in user’s own Profile/Settings via an explicit show/hide button",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Remove Principal ID display from all public UI surfaces (profiles, popovers, post/message author areas, server lists, etc.). The app must never show another user’s Principal ID anywhere in the UI.",
       "reqIds": [
         "REQ-10"
       ],
       "status": "pending"
     },
     {
-      "id": "AR-16",
-      "summary": "Implement a server role/rank permission system with preset roles (at minimum: Owner, Admin, Moderator, Member) and enforce permissions for server/channel actions (configure/edit/delete and any customization actions added). Include an initial path for server owners to customize role permissions after presets are created.",
+      "id": "AR-22",
+      "summary": "In the signed-in user’s Profile & Settings page, replace any always-visible Principal ID text with an explicit user-only show/hide control (e.g., “Show my ID” / “Hide my ID”), and include a copy-to-clipboard action. The Principal must be hidden by default on page load.",
       "reqIds": [
         "REQ-11"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Extend backend user profiles to support additional fields (at minimum: bio and join date) and per-field public/private visibility controls for all profile fields (display name, avatar, bio, join date, and any other stored profile fields). Public profile queries must only return fields marked public to non-owners, while the profile owner must be able to fetch and edit all fields and visibility settings.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Update the Profile & Settings UI to allow the signed-in user to edit bio and manage per-field visibility toggles for all supported profile fields (display name, avatar, bio, join date, and any other stored fields). Ensure user-facing text is in English.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Update profile display surfaces (e.g., profile popover and any public profile UI) to show meaningful public profile information (display name, avatar, bio, join date when public) instead of showing only a Principal ID. Do not display non-public fields to other users.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Fix server management controls visibility so that edit/delete actions appear for the actual server owner. Ensure ownership checks are based on the server owner Principal (not display name), and wire the frontend to use that owner Principal for permission checks.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Enhance @mention UX beyond autocomplete by formatting mentions in rendered message/post text and making them clickable to open the mentioned user’s profile surface (e.g., a profile popover). Mentions must resolve to the correct user identity (Principal) for profile lookup.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Add any required conditional state migration to preserve existing user profiles when upgrading the backend profile schema (e.g., initialize new fields and visibility settings with safe defaults, and set join date for existing users).",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-31",
+      "summary": "Extend backend user profiles to support additional fields (at minimum: bio and join date) and per-field public/private visibility controls for all profile fields (including display name, avatar, bio, join date, and any other stored profile fields). Public profile queries must only return fields marked public to non-owners, while the profile owner must be able to fetch and edit all fields and visibility settings.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-36",
+      "summary": "Add any required conditional state migration to preserve existing user profiles when upgrading the backend profile schema, initializing new fields and visibility settings with safe defaults and setting join date for existing users where appropriate.",
+      "reqIds": [
+        "REQ-25"
       ],
       "status": "pending"
     }
@@ -288,8 +432,9 @@
     "Profile settings should include a user-controlled privacy toggle for showing/hiding the user’s principal/ID in the UI."
   ],
   "known_issues": [
-    "Profile image upload appears broken (user cannot upload an image for their profile); image-URL option may still work but needs verification.",
-    "Profile avatar image upload is confirmed broken by user; image-URL-based avatars may still work but are unverified."
+    "Public profiles currently show only the user’s principal ID (and expose principal publicly), instead of showing basic public profile fields like display name/avatar.",
+    "Server management controls (settings/edit/delete) are still not appearing in the UI for authorized users, blocking server management.",
+    "Profile image upload is not working reliably for users (needs investigation/fix)."
   ],
   "isFixRequest": true,
   "generatedImages": [

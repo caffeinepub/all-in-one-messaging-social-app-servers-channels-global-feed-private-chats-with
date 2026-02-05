@@ -1,216 +1,151 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Server/channel customization, role presets UI, richer profiles, username autocomplete, profile popovers, and avatar upload fixes (frontend-only)",
+  "title": "Privacy-safe profiles, mention rendering, and correct server-owner management controls (frontend)",
   "requirements": [
     {
-      "id": "REQ-10",
-      "summary": "Add server and channel settings UIs to view/update customizable fields (name plus additional fields when backend support is available) and reflect updated values in lists/headers.",
+      "id": "REQ-18",
+      "summary": "Remove all public display of other users’ Principal IDs across the UI.",
       "acceptanceCriteria": [
-        "A signed-in user with appropriate permissions can open a server settings UI and update server fields; changes persist after refresh.",
-        "A signed-in user with appropriate permissions can open a channel settings UI and update channel fields; changes persist after refresh.",
-        "Server/channel list and relevant headers reflect updated names and images (icon/banner) when provided."
+        "When viewing any other user, no UI surface renders their Principal ID.",
+        "No lists (feed, servers, channels, DMs, search/autocomplete results, popovers) show Principal IDs."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/servers/ServerSettingsDialog.tsx",
-          "operation": "create",
-          "description": "Create a server settings dialog that supports editing server name via existing mutations and includes form sections for additional server fields (description/icon/banner/settings) that render only when corresponding backend data/capabilities exist. Use shadcn-ui dialog/form primitives for consistent UI. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/components/profile/ProfilePopover.tsx",
+          "operation": "modify",
+          "description": "Remove any rendering of userPrincipal.toString() (Principal ID) for non-owner and owner contexts; ensure the popover only shows meaningful public profile fields (e.g., display name, avatar, bio/join date when available) and never exposes Principal IDs."
         },
         {
-          "path": "frontend/src/components/channels/ChannelSettingsDialog.tsx",
-          "operation": "create",
-          "description": "Create a channel settings dialog that supports editing channel name via existing mutations and includes form sections for additional channel fields (topic/description/icon/settings) that render only when corresponding backend data/capabilities exist. Use shadcn-ui dialog/form primitives for consistent UI. Verify the component's usage instructions before implementing."
+          "path": "frontend/src/pages/ProfileSettingsPage.tsx",
+          "operation": "modify",
+          "description": "Remove the always-visible Principal ID text from the profile header area so the page does not reveal the Principal ID unless explicitly toggled by the signed-in user (REQ-19)."
         },
         {
           "path": "frontend/src/components/servers/ServerList.tsx",
           "operation": "modify",
-          "description": "Wire the new ServerSettingsDialog into the server list actions so authorized users can open server settings (in addition to rename/delete). Ensure the list reflects updated server name immediately after successful save via existing React Query invalidation."
-        },
-        {
-          "path": "frontend/src/components/channels/ChannelList.tsx",
-          "operation": "modify",
-          "description": "Wire the new ChannelSettingsDialog into the channel list actions so authorized users can open channel settings (in addition to rename/delete). Ensure the list reflects updated channel name immediately after successful save via existing React Query invalidation."
-        },
-        {
-          "path": "frontend/src/pages/ServersPage.tsx",
-          "operation": "modify",
-          "description": "Ensure the selected server/channel header areas (or existing UI near ChannelTimeline) display the latest server/channel names and, when available, server icon/banner and channel icon. Keep rendering resilient when these fields are not yet provided by the backend."
+          "description": "Remove any server list UI that could display a Principal ID (e.g., the current \"by {server.owner}\" text if it contains principal strings) and replace it with safe, meaningful owner display info derived from public profile data."
         }
       ]
     },
     {
-      "id": "REQ-11",
-      "summary": "Add a server role/rank preset UI (Owner/Admin/Moderator/Member) and use it to gate/disable server/channel management controls in the frontend, with a path for owners to customize permission flags (UI-ready for backend persistence).",
+      "id": "REQ-19",
+      "summary": "Add a signed-in-user-only reveal/hide + copy control for the user’s own Principal ID in Profile & Settings (hidden by default).",
       "acceptanceCriteria": [
-        "Each server has role assignments for members and at least the preset roles available.",
-        "Only authorized roles can edit/delete/customize servers and channels; unauthorized users see disabled controls or receive a clear error.",
-        "Server owners can modify the permission flags for preset roles (customization UI + backend persistence)."
+        "On initial load of Profile/Settings, the Principal ID is not visible.",
+        "Clicking “Show my ID” reveals the Principal ID; clicking “Hide my ID” hides it again.",
+        "A “Copy” action copies the Principal ID to the clipboard and provides a visible success confirmation."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/servers/RolePermissionsEditor.tsx",
-          "operation": "create",
-          "description": "Create a role preset/permissions editor UI for Owner/Admin/Moderator/Member that allows an owner to view and adjust permission flags (e.g., manage server, manage channels, delete, customize). Implement as UI-first, persisting only when backend capabilities are available. Use shadcn-ui components for toggles/forms. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/servers/ServerSettingsDialog.tsx",
+          "path": "frontend/src/pages/ProfileSettingsPage.tsx",
           "operation": "modify",
-          "description": "Integrate RolePermissionsEditor into the server settings dialog under a 'Roles & Permissions' section, showing it only for owners/admins once role data is available from the backend. Include clear English messaging when the user is not authorized to edit permissions."
-        },
+          "description": "Add a user-only section in Profile & Settings with stateful reveal/hide controls (hidden by default) for the signed-in user’s Principal ID and a copy-to-clipboard action using the existing toast system for success confirmation; do not render the Principal ID anywhere on this page unless the user explicitly reveals it."
+        }
+      ]
+    },
+    {
+      "id": "REQ-21",
+      "summary": "Update Profile & Settings UI to edit bio and manage per-field public/private visibility toggles for all supported profile fields (English text).",
+      "acceptanceCriteria": [
+        "Profile/Settings includes an editable Bio field.",
+        "Profile/Settings includes a visibility toggle per supported field (e.g., Display name, Avatar, Bio, Join date, etc.).",
+        "Toggling visibility changes what other users can see on public profile surfaces.",
+        "All labels, helper text, button text, and confirmations are in English."
+      ],
+      "file_operations": [
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Add/adjust React Query hooks needed for role/permission gating using existing backend capabilities (e.g., getCallerUserRole and isCallerAdmin). Centralize role checks and provide reusable helpers for UI gating. Mentioned selected component: Use the authorization component concepts (role-based access control + handling Unauthorized traps) to drive consistent client-side gating and error handling. Verify the component's usage instructions before implementing."
+          "description": "Update profile-related hooks to use the backend’s current profile types (caller profile as ExtendedUserProfile, other-user profile as PublicUserProfile) and add a mutation hook to update per-field visibility via the backend capability that updates profile field visibility; ensure relevant queries are invalidated/refetched after visibility changes."
         },
-        {
-          "path": "frontend/src/components/servers/ServerList.tsx",
-          "operation": "modify",
-          "description": "Replace owner-only gating with role/permission-based gating for rename/delete/settings actions. Disable or hide controls for unauthorized users and show clear English feedback if backend rejects an action (trap) despite UI checks. Mentioned selected component: Use the authorization component guidance for handling authorization failures in the UI. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/channels/ChannelList.tsx",
-          "operation": "modify",
-          "description": "Replace owner-only gating with role/permission-based gating for channel rename/delete/settings actions. Disable or hide controls for unauthorized users and show clear English feedback if backend rejects an action (trap) despite UI checks. Mentioned selected component: Use the authorization component guidance for handling authorization failures in the UI. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-12",
-      "summary": "Expand Profile/Settings UI to edit and save richer profile fields and render them in at least one read-only display context.",
-      "acceptanceCriteria": [
-        "Profile/Settings page includes editable controls for newly added profile fields and saves them successfully.",
-        "New profile fields render in at least one read-only display context (e.g., profile preview popover and/or a profile section on the settings page).",
-        "Validation errors (if any) are shown in English and prevent invalid saves."
-      ],
-      "file_operations": [
         {
           "path": "frontend/src/pages/ProfileSettingsPage.tsx",
           "operation": "modify",
-          "description": "Extend the Profile & Settings form UI to include additional editable fields (social + gamer/tag style), such as bio, links, banner, status, badges, pronouns, and theme color (or similar). Add English validation and prevent invalid saves. Keep compatibility with current backend UserProfile by conditionally including fields only when supported by returned profile shape."
-        },
-        {
-          "path": "frontend/src/components/profile/ProfileFieldsPreview.tsx",
-          "operation": "create",
-          "description": "Create a read-only profile fields preview component that renders the expanded profile fields (including banner/status/bio/links/etc. when present) for reuse in settings and the quick profile popover. Use shadcn-ui typography/layout primitives where appropriate. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/profile/ProfileSetupModal.tsx",
-          "operation": "modify",
-          "description": "Update the initial profile setup flow to remain compatible with the expanded profile model (at minimum maintain display name + avatar), and optionally capture a minimal subset of new fields if supported, without introducing a modal flash or blocking login."
+          "description": "Refactor the profile form to align with supported fields (Display name, Avatar, Bio, Join date) and add a public/private visibility toggle per supported field using existing UI components; wire toggles to the visibility update hook and keep all user-facing text in English."
         }
       ]
     },
     {
-      "id": "REQ-13",
-      "summary": "Add a Profile/Settings toggle to control visibility of the user’s principal/ID to other users and enforce it across UI displays including popovers.",
+      "id": "REQ-22",
+      "summary": "Update all profile display surfaces to show meaningful public profile info (and only public fields) instead of Principal IDs.",
       "acceptanceCriteria": [
-        "A signed-in user can toggle whether their principal/ID is visible to other users and save the setting.",
-        "When ID visibility is turned off, other users do not see the principal/ID in the UI (including in popovers); the owner can still see their own ID in settings."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/ProfileSettingsPage.tsx",
-          "operation": "modify",
-          "description": "Add a settings toggle for 'Show my ID (principal) to others' and persist it when the backend profile supports this field. Update the settings UI so the user can always see their own principal in settings regardless of the toggle, while ensuring the toggle controls visibility to other users elsewhere."
-        },
-        {
-          "path": "frontend/src/components/profile/useIdVisibility.ts",
-          "operation": "create",
-          "description": "Create a small hook/utility that determines whether a viewed user's principal should be displayed based on the viewed user's saved preference and whether the viewer is the same user. Keep behavior resilient when the preference field is absent (default to hidden from others)."
-        },
-        {
-          "path": "frontend/src/components/profile/ProfilePopover.tsx",
-          "operation": "create",
-          "description": "Ensure the quick profile preview UI (popover/modal) respects ID visibility by hiding the principal/ID when the viewed user has disabled it and the viewer is not the owner. Use shadcn-ui popover/dialog primitives. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "summary": "Implement global username-based typing/autocomplete for user selection and identity resolution, reusing backend user search where relevant (DM start, and @-mention style selection where applicable).",
-      "acceptanceCriteria": [
-        "Typing a username/display name surfaces matching users in an autocomplete dropdown with stable selection.",
-        "Selecting an autocomplete result uses the correct underlying user identity (principal/userId) for actions like starting a DM.",
-        "Backend exposes a query suitable for user search that returns consistent results for partial matches."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/users/UserAutocompleteInput.tsx",
-          "operation": "create",
-          "description": "Create a reusable username autocomplete input that queries user search and renders a keyboard-navigable dropdown of results, returning the selected Principal and display name. Use existing useSearchUsers hook and shadcn-ui input/list primitives. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/dms/StartDmForm.tsx",
-          "operation": "modify",
-          "description": "Replace the current manual search results list with the reusable UserAutocompleteInput to provide stable autocomplete selection behavior and ensure the selected Principal is used for starting a DM."
-        },
-        {
-          "path": "frontend/src/components/messages/MessageComposer.tsx",
-          "operation": "modify",
-          "description": "Add optional @-mention style user autocomplete behavior while composing messages: when the user types a trigger (e.g., '@' + characters), surface UserAutocompleteInput-like suggestions and insert the chosen display name while preserving the underlying selected identity for future use (UI-only until backend mention support exists)."
-        },
-        {
-          "path": "frontend/src/components/dms/DmComposer.tsx",
-          "operation": "modify",
-          "description": "Add optional @-mention style user autocomplete behavior while composing DMs, consistent with MessageComposer (UI-only until backend mention support exists)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-15",
-      "summary": "Add a quick profile preview popover/modal from message contexts (channels and DMs) showing key profile info while respecting ID visibility settings.",
-      "acceptanceCriteria": [
-        "Clicking an author avatar or display name in a message opens a profile preview UI.",
-        "The preview includes at least avatar + display name and a subset of expanded profile fields, and does not show the principal when hidden by that user.",
-        "The preview can be dismissed via click-away and/or an explicit close control."
+        "Public-facing profile surfaces display public fields (e.g., display name and avatar) when available.",
+        "Bio and join date only render for other users if those fields are marked public by the profile owner.",
+        "No public profile surface renders a Principal ID."
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/profile/ProfilePopover.tsx",
           "operation": "modify",
-          "description": "Implement the profile preview content (avatar, display name, subset of expanded profile fields via ProfileFieldsPreview) and dismissal behavior (click-away and close). Ensure it uses useGetUserProfile for the viewed user and respects ID visibility (REQ-13)."
-        },
-        {
-          "path": "frontend/src/components/messages/MessageItem.tsx",
-          "operation": "modify",
-          "description": "Wire ProfilePopover so clicking an author's avatar and/or display name opens the quick profile preview from channel and DM message contexts. Ensure the popover uses the author's Principal for correct profile resolution."
+          "description": "Update the popover to render only public profile fields returned by public profile queries (e.g., displayName, avatar, bio, joinDate when present) and to never show Principal IDs; format and label fields in English and ensure missing fields do not render placeholders that imply private data."
         },
         {
           "path": "frontend/src/components/feed/PostItem.tsx",
           "operation": "modify",
-          "description": "Optionally extend the same quick profile preview behavior to feed post author UI if present, reusing ProfilePopover for consistency and to increase read-only display coverage of expanded profile fields."
+          "description": "Ensure post author UI uses public profile information (display name, avatar) and opens the updated ProfilePopover without exposing Principal IDs; confirm no fallback path renders Principal strings."
+        },
+        {
+          "path": "frontend/src/components/messages/MessageItem.tsx",
+          "operation": "modify",
+          "description": "Ensure message author UI uses public profile information (display name, avatar) and opens the updated ProfilePopover without exposing Principal IDs; confirm no fallback path renders Principal strings."
         }
       ]
     },
     {
-      "id": "REQ-16",
-      "summary": "Fix the profile avatar image upload flow end-to-end (settings + setup modal) with validation, progress/success feedback, persistence-friendly state, and correct display via existing avatar rendering logic.",
+      "id": "REQ-23",
+      "summary": "Fix server management controls visibility using server owner Principal returned by the backend for permission checks.",
       "acceptanceCriteria": [
-        "A user can upload an image file as their avatar, save, refresh, and still see the uploaded avatar.",
-        "Upload failures show a clear English error message and do not corrupt the existing avatar state.",
-        "Image URL-based avatars (if present) continue to work and do not break when upload is also available."
+        "If the signed-in user is the server owner, server management actions are visible and usable.",
+        "If the signed-in user is not the server owner, server management actions are not shown (or are disabled) as appropriate.",
+        "Ownership/permission logic is based on Principal identity, not display name."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/profile/AvatarUploader.tsx",
+          "path": "frontend/src/components/servers/ServerList.tsx",
+          "operation": "modify",
+          "description": "Change the owner check to compare the signed-in user’s Principal string to server.ownerPrincipal (not server.owner), and keep edit/delete actions visible only for the true owner based on Principal identity."
+        },
+        {
+          "path": "frontend/src/components/channels/ChannelList.tsx",
+          "operation": "modify",
+          "description": "Fix channel management visibility by comparing the signed-in user’s Principal to the selected server’s ownerPrincipal (not server owner display text), so create/edit/delete controls appear only for the actual server owner."
+        },
+        {
+          "path": "frontend/src/pages/ServersPage.tsx",
+          "operation": "modify",
+          "description": "Update props passed into ServerList/ChannelList so the permission checks consistently use the signed-in user’s Principal and the server’s ownerPrincipal returned by the backend."
+        }
+      ]
+    },
+    {
+      "id": "REQ-24",
+      "summary": "Enhance @mention UX by formatting mentions in rendered text and making them clickable to open a user profile surface without exposing Principal IDs.",
+      "acceptanceCriteria": [
+        "Rendered message/post text visually distinguishes @mentions from surrounding text.",
+        "Clicking an @mention opens a profile surface for the mentioned user.",
+        "The UI does not reveal Principal IDs as part of mention rendering or interaction."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useMentionResolver.ts",
           "operation": "create",
-          "description": "Create a shared avatar uploader component used by both ProfileSettingsPage and ProfileSetupModal that performs consistent validation, shows upload progress, and returns the uploaded Attachment for saving. Mentioned selected component: Use the blob-storage ExternalBlob capability (fromBytes + withUploadProgress + getDirectURL) to support reliable uploads and progress tracking. Verify the component's usage instructions before implementing."
+          "description": "Create a small resolver hook to map an @mention display name to a user Principal using existing user search capabilities, with lightweight caching so clicks can open a profile surface without showing Principal IDs."
         },
         {
-          "path": "frontend/src/pages/ProfileSettingsPage.tsx",
-          "operation": "modify",
-          "description": "Replace the inline avatar upload logic with AvatarUploader to ensure consistent validation/progress/success behavior. Ensure switching between URL and Upload modes does not erase the other mode’s value, and that failed uploads preserve the last known-good avatar state."
+          "path": "frontend/src/components/text/MentionText.tsx",
+          "operation": "create",
+          "description": "Create a renderer component that parses message/post text, visually styles @mentions, and makes them clickable; on click, resolve the mention to a Principal and open a profile popover surface without exposing any Principal IDs in the UI."
         },
         {
-          "path": "frontend/src/components/profile/ProfileSetupModal.tsx",
+          "path": "frontend/src/components/feed/PostItem.tsx",
           "operation": "modify",
-          "description": "Replace the inline avatar upload logic with AvatarUploader to ensure first-time setup upload works reliably and matches the settings page behavior. Keep user-facing text in English and provide clear error messages."
+          "description": "Replace plain post content rendering with the MentionText component so @mentions are formatted and clickable while keeping the UI free of Principal IDs."
         },
         {
-          "path": "frontend/src/components/profile/UserAvatar.tsx",
+          "path": "frontend/src/components/messages/MessageItem.tsx",
           "operation": "modify",
-          "description": "Harden avatar rendering for both uploaded attachments and URL-based avatars: avoid unnecessary re-creation work across renders, handle invalid/missing data safely, and ensure fallback initials work consistently when an avatar cannot be displayed."
+          "description": "Replace plain message content rendering with the MentionText component so @mentions are formatted and clickable while keeping the UI free of Principal IDs."
         }
       ]
     }

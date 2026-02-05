@@ -14,6 +14,12 @@ export class ExternalBlob {
     static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
     withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
 }
+export interface ProfileVisibilityStatus {
+    bio: FieldVisibility;
+    displayName: FieldVisibility;
+    joinDate: FieldVisibility;
+    avatar: FieldVisibility;
+}
 export interface ChannelInfo {
     id: string;
     name: string;
@@ -21,6 +27,7 @@ export interface ChannelInfo {
 export interface ServerInfo {
     id: string;
     owner: string;
+    ownerPrincipal: Principal;
     name: string;
 }
 export interface UserSearchResult {
@@ -33,10 +40,26 @@ export interface ChannelView {
     name: string;
     createdAt: bigint;
 }
+export interface ExtendedUserProfile {
+    bio: string;
+    displayName: string;
+    joinDate: bigint;
+    displayNameVisibility: FieldVisibility;
+    bioVisibility: FieldVisibility;
+    avatarUrl?: string;
+    avatarVisibility: FieldVisibility;
+    avatarAttachment?: Attachment;
+    joinDateVisibility: FieldVisibility;
+}
+export interface PublicUserProfile {
+    bio: string;
+    displayName: string;
+    joinDate: bigint;
+    avatarUrl?: string;
+}
 export interface NewServerParams {
     name: string;
 }
-export type Attachment = Uint8Array;
 export interface Post {
     id: string;
     content: string;
@@ -46,6 +69,7 @@ export interface Post {
     attachments: Array<Attachment>;
     authorPrincipal: Principal;
 }
+export type Attachment = Uint8Array;
 export interface Message {
     id: string;
     content: string;
@@ -55,10 +79,9 @@ export interface Message {
     attachments: Array<Attachment>;
     authorPrincipal: Principal;
 }
-export interface UserProfile {
-    displayName: string;
-    avatarUrl?: string;
-    avatarAttachment?: Attachment;
+export enum FieldVisibility {
+    privateVisibility = "privateVisibility",
+    publicVisibility = "publicVisibility"
 }
 export enum UserRole {
     admin = "admin",
@@ -78,7 +101,7 @@ export interface backendInterface {
     editServer(serverId: string, newName: string): Promise<void>;
     getAllChannels(serverId: string): Promise<Array<ChannelInfo>>;
     getAllServers(): Promise<Array<ServerInfo>>;
-    getCallerUserProfile(): Promise<UserProfile | null>;
+    getCallerUserProfile(): Promise<ExtendedUserProfile | null>;
     getCallerUserRole(): Promise<UserRole>;
     getChannel(serverId: string, channelId: string): Promise<ChannelView | null>;
     getDirectMessages(otherUserPrincipal: Principal, limit: bigint): Promise<Array<Message>>;
@@ -87,12 +110,14 @@ export interface backendInterface {
     getOlderDirectMessages(otherUserPrincipal: Principal, beforeTimestamp: bigint, limit: bigint): Promise<Array<Message>>;
     getOlderMessages(serverId: string, channelId: string, beforeTimestamp: bigint, limit: bigint): Promise<Array<Message>>;
     getOlderPosts(beforeTimestamp: bigint, limit: bigint): Promise<Array<Post>>;
+    getProfileVisibility(user: Principal): Promise<ProfileVisibilityStatus | null>;
     getServer(serverId: string): Promise<ServerInfo | null>;
-    getUserProfile(user: Principal): Promise<UserProfile | null>;
+    getUserProfile(user: Principal): Promise<PublicUserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
-    saveCallerUserProfile(profile: UserProfile): Promise<void>;
+    saveCallerUserProfile(profile: ExtendedUserProfile): Promise<void>;
     searchUsers(searchTerm: string): Promise<Array<UserSearchResult>>;
     sendDirectMessage(recipientPrincipal: Principal, content: string, attachments: Array<Attachment>, imageUrl: string | null): Promise<Message>;
     sendMessage(serverId: string, channelId: string, content: string, attachments: Array<Attachment>, imageUrl: string | null): Promise<Message>;
+    updateProfileFieldVisibility(field: string, visibility: FieldVisibility): Promise<void>;
     uploadAttachment(fileReference: ExternalBlob, fileType: string, size: bigint): Promise<Attachment>;
 }

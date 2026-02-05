@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { useGetUserProfile, useDeleteMessage } from '../../hooks/useQueries';
 import UserAvatar from '../profile/UserAvatar';
 import ProfilePopover from '../profile/ProfilePopover';
+import MentionText from '../text/MentionText';
 import { formatDistanceToNow } from 'date-fns';
 import type { Message } from '../../backend';
 import { ExternalBlob } from '../../backend';
@@ -16,7 +17,7 @@ interface MessageItemProps {
 export default function MessageItem({ message, canDelete = false }: MessageItemProps) {
   const { data: authorProfile } = useGetUserProfile(message.authorPrincipal);
   const deleteMessage = useDeleteMessage();
-  const displayName = authorProfile?.displayName || message.author || 'Anonymous';
+  const displayName = authorProfile?.displayName || 'Anonymous';
 
   const timestamp = new Date(Number(message.timestamp) / 1_000_000);
   const timeAgo = formatDistanceToNow(timestamp, { addSuffix: true });
@@ -57,7 +58,11 @@ export default function MessageItem({ message, canDelete = false }: MessageItemP
             </Button>
           )}
         </div>
-        {message.content && <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>}
+        {message.content && (
+          <p className="text-sm whitespace-pre-wrap break-words">
+            <MentionText content={message.content} />
+          </p>
+        )}
         {message.imageUrl && (
           <img
             src={message.imageUrl}

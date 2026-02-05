@@ -1,62 +1,70 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-05T00:27:50.697Z",
-  "summary": "Diff implements username search/autocomplete (backend + reusable input), @-mention autocomplete in message/DM composers, quick profile popovers on avatars/names, and a new avatar upload component integrated into profile setup/settings and avatar rendering. Server/channel customization and role/permission presets are not present. Expanded profile fields and ID-visibility toggle are added in frontend UI/popover but lack corresponding backend persistence in the shown backend types/save logic.",
+  "generatedAt": "2026-02-05T01:26:49.314Z",
+  "summary": "Diff implements backend profile schema extension with bio/joinDate + per-field visibility, adds a migration module, updates profile popover and post/message rendering to use public profile info, introduces clickable/styled @mentions via a resolver hook, and adjusts server/channel ownership checks to use ownerPrincipal. Some requirements are not fully verifiable from the truncated diff, and a few privacy/\"safe default\" behaviors appear potentially unmet based on shown code.",
   "missing_requirements": [
     {
-      "id": "REQ-10",
-      "requirement": "Add server and channel customization fields (server: name/description/icon/banner/settings; channel: name/topic/icon/settings) with backend persistence and frontend settings forms; lists/headers reflect updates.",
-      "reason": "No server/channel additional fields, settings UIs, or persistence logic are shown; backend Server/Channel types in the diff still only contain id/name/createdAt/messages/channels and no icon/banner/description/topic/settings fields.",
+      "id": "REQ-18",
+      "requirement": "Remove any public display of user Principal IDs across the entire UI (including all lists and user surfaces).",
+      "reason": "Some key UI surfaces are not shown in the diff summary (e.g., DM thread list, server/channel rows beyond truncated sections, search/autocomplete results UI). While PostItem/MessageItem/ProfilePopover no longer show Principal IDs, the diff evidence is insufficient to confirm removal across the entire UI.",
       "evidence": [
-        "backend/main.mo",
-        "frontend-file-summaries.txt (ServerList/ChannelList described as inline editing/edit-delete only; no settings UI mentioned)"
+        "frontend/src/components/feed/PostItem.tsx",
+        "frontend/src/components/messages/MessageItem.tsx",
+        "frontend/src/components/profile/ProfilePopover.tsx",
+        "frontend-file-summaries.txt (mentions other components but content truncated/not shown)"
       ]
     },
     {
-      "id": "REQ-11",
-      "requirement": "Implement server role/rank permission system with preset roles (Owner/Admin/Moderator/Member), enforcement for server/channel actions, and owner customization of permission flags with persistence.",
-      "reason": "No role data models, role assignment APIs, permission flag editing UI, or enforcement logic for roles are shown in the diff; only existing AccessControl permission checks for generic #user appear around profile/search.",
+      "id": "REQ-19",
+      "requirement": "Profile & Settings page: add reveal/hide own Principal ID (hidden by default) plus copy-to-clipboard with visible success confirmation.",
+      "reason": "ProfileSettingsPage.tsx shows state for show/hide and imports Eye/EyeOff/Copy, but the diff is truncated before showing the actual UI controls, clipboard call, and explicit success confirmation behavior.",
       "evidence": [
-        "backend/main.mo"
+        "frontend/src/pages/ProfileSettingsPage.tsx (truncated)"
       ]
     },
     {
-      "id": "REQ-12",
-      "requirement": "Expand user profiles with additional fields (bio/links/banner/status/badges/pronouns/theme color etc.) and update Profile/Settings page to edit/save; render new fields read-only in at least one context; show validation errors in English.",
-      "reason": "Frontend adds fields and renders them (settings page + popover), but backend UserProfile type and save/get methods shown do not include these fields, so saving/persisting them is not evidenced.",
+      "id": "REQ-20",
+      "requirement": "Public profile queries must only return fields marked public to non-owners (do not expose non-public fields).",
+      "reason": "backend/main.mo shows getUserProfile returning a PublicUserProfile and, for at least displayName, returns the literal string \"Private\" when the field is not public and caller is not owner. This is still returning a value for a non-public field rather than omitting it or otherwise not exposing it (as required). Full function is truncated, so other fields cannot be verified, but the shown pattern suggests non-public fields may be exposed as placeholders.",
       "evidence": [
-        "backend/main.mo (UserProfile only: displayName, avatarUrl, avatarAttachment; saveCallerUserProfile stores that type)",
-        "frontend/src/pages/ProfileSettingsPage.tsx (casts to ExtendedUserProfile and sends extra fields via `any`)",
-        "frontend/src/components/profile/ProfilePopover.tsx (renders bio/status/pronouns/links/etc. from cast ExtendedUserProfile)"
+        "backend/main.mo (truncated): getUserProfile sets displayName to \"Private\" when not public"
       ]
     },
     {
-      "id": "REQ-13",
-      "requirement": "Add a Profile/Settings toggle controlling visibility of the user principal/ID to others, and enforce it anywhere identity details are displayed (including popovers); owner can still see their own ID in settings.",
-      "reason": "Popover respects a `showIdToOthers` flag (and always shows for own profile), and settings UI includes a `showIdToOthers` state, but backend persistence for this flag is not shown (UserProfile type lacks it), so the toggle likely will not persist/propagate reliably.",
+      "id": "REQ-21",
+      "requirement": "Profile & Settings UI: allow editing bio and managing per-field visibility toggles for all supported profile fields (Display name, Avatar, Bio, Join date, etc.).",
+      "reason": "State variables and mutation hook for visibility updates are present, but the diff is truncated before confirming that the page actually renders toggles for all fields (including join date) and wires them correctly.",
       "evidence": [
-        "backend/main.mo (UserProfile type lacks `showIdToOthers`)",
-        "frontend/src/components/profile/ProfilePopover.tsx (uses `extendedProfile?.showIdToOthers !== false`)",
-        "frontend/src/pages/ProfileSettingsPage.tsx (maintains `showIdToOthers` and sends it in `profileData`)"
+        "frontend/src/pages/ProfileSettingsPage.tsx (truncated)",
+        "frontend/src/hooks/useQueries.ts (useUpdateProfileFieldVisibility)"
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "requirement": "Conditional migration should initialize new fields/visibility with safe defaults and populate join date for existing users where appropriate (or a safe/consistent fallback).",
+      "reason": "backend/migration.mo initializes bio to \"\", joinDate to 0, and sets *all* visibility fields to #publicVisibility. Given the build’s privacy-safe intent and the requirement for \"safe defaults\", defaulting all fields to public appears unsafe, and joinDate is not populated with a meaningful value (it is always 0).",
+      "evidence": [
+        "backend/migration.mo: displayNameVisibility/#publicVisibility, avatarVisibility/#publicVisibility, bioVisibility/#publicVisibility, joinDate=0, joinDateVisibility/#publicVisibility"
       ]
     }
   ],
   "hallucinated_features": [],
-  "confidence": 0.74,
+  "confidence": 0.66,
   "changed_files": [
     "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/components/dms/DmComposer.tsx",
-    "frontend/src/components/dms/StartDmForm.tsx",
+    "frontend/src/components/channels/ChannelList.tsx",
     "frontend/src/components/feed/PostItem.tsx",
-    "frontend/src/components/messages/MessageComposer.tsx",
     "frontend/src/components/messages/MessageItem.tsx",
-    "frontend/src/components/profile/AvatarUploader.tsx",
     "frontend/src/components/profile/ProfilePopover.tsx",
     "frontend/src/components/profile/ProfileSetupModal.tsx",
     "frontend/src/components/profile/UserAvatar.tsx",
-    "frontend/src/components/users/UserAutocompleteInput.tsx",
+    "frontend/src/components/servers/ServerList.tsx",
+    "frontend/src/components/text/MentionText.tsx",
+    "frontend/src/hooks/useMentionResolver.ts",
+    "frontend/src/hooks/useQueries.ts",
     "frontend/src/pages/ProfileSettingsPage.tsx",
     "project_state.json"
   ]

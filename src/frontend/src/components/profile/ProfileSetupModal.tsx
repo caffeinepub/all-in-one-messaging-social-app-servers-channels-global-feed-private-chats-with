@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AvatarUploader from './AvatarUploader';
 import { toast } from 'sonner';
-import type { Attachment } from '../../backend';
+import type { Attachment, ExtendedUserProfile, FieldVisibility } from '../../backend';
 
 export default function ProfileSetupModal() {
   const { identity } = useInternetIdentity();
@@ -30,11 +30,19 @@ export default function ProfileSetupModal() {
     }
 
     try {
-      await saveProfile.mutateAsync({
+      const profileData: ExtendedUserProfile = {
         displayName: displayName.trim(),
+        displayNameVisibility: 'publicVisibility' as FieldVisibility,
         avatarUrl: avatarMode === 'url' ? (avatarUrl.trim() || undefined) : undefined,
         avatarAttachment: avatarMode === 'upload' ? avatarAttachment || undefined : undefined,
-      });
+        avatarVisibility: 'publicVisibility' as FieldVisibility,
+        bio: '',
+        bioVisibility: 'publicVisibility' as FieldVisibility,
+        joinDate: BigInt(0),
+        joinDateVisibility: 'publicVisibility' as FieldVisibility,
+      };
+
+      await saveProfile.mutateAsync(profileData);
       toast.success('Profile created successfully!');
     } catch (error: any) {
       toast.error(error.message || 'Failed to create profile');
