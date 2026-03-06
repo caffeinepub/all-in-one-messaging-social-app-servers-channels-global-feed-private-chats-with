@@ -1,0 +1,147 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Fix channel creation error and add server joining features",
+  "requirements": [
+    {
+      "id": "REQ-2",
+      "summary": "Add a server browser view that displays all available public servers that users can browse and join",
+      "acceptanceCriteria": [
+        "Users can view a list of all available servers",
+        "Each server listing shows its name, member count, and description",
+        "Users can click to join any server from the browse view",
+        "The server browser is accessible from the servers page navigation"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/servers/ServerBrowser.tsx",
+          "operation": "create",
+          "description": "Create a new ServerBrowser component that fetches and displays all public servers using the getAllServers backend method. Display each server with name, member count, description from branding, and a join button. Include loading states and empty state handling. Wire the join functionality to trigger server joining and refresh the user's server list."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add a useGetAllServers hook that queries actor.getAllServers() and returns the list of all available servers. Include proper error handling and loading states. Add a useJoinServerById mutation hook that accepts a serverId and calls the appropriate backend method to add the user to that server, then invalidates server list queries."
+        },
+        {
+          "path": "frontend/src/pages/ServersPage.tsx",
+          "operation": "modify",
+          "description": "Integrate the ServerBrowser component into the servers page. Add a browse/discover section or tab that displays the ServerBrowser when no server is selected or when accessed via navigation. Ensure the browser view is accessible and the newly joined server appears in the user's server list after joining."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Enhance the existing join server dialog to support both invite code entry and direct server selection from the browse view",
+      "acceptanceCriteria": [
+        "Users can join servers by entering an invite code",
+        "Users can join servers by selecting from the browse list",
+        "Both joining methods properly add the user to the server",
+        "Success feedback is shown after joining",
+        "The newly joined server appears in the user's server list"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/servers/JoinServerDialog.tsx",
+          "operation": "modify",
+          "description": "Enhance the JoinServerDialog to support two modes: invite code entry (existing) and direct server ID joining (new). Add a parameter to accept an optional serverId prop. When serverId is provided, skip the invite code input and directly join that server. Show appropriate success messages for both join methods. Ensure both paths invalidate the server list query and display the newly joined server."
+        },
+        {
+          "path": "frontend/src/components/servers/ServerBrowser.tsx",
+          "operation": "modify",
+          "description": "Update the ServerBrowser component's join button to open the JoinServerDialog with the selected server's ID. Pass the serverId to enable direct joining without requiring an invite code. Ensure proper state management for dialog opening/closing."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Ensure the useJoinServerById mutation (added in REQ-2) properly handles success/error states, shows toast notifications for feedback, and invalidates both the user's server list and the all-servers list queries after successful joining."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Improve message composer UX by adding visual feedback for mentions, improving attachment preview layouts, and enhancing the send button state",
+      "acceptanceCriteria": [
+        "Mentions show visual styling as users type",
+        "Attachment previews display in a clean, organized layout",
+        "Send button is disabled when there is no content to send",
+        "Send button shows loading state during message submission"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/messages/MessageComposer.tsx",
+          "operation": "modify",
+          "description": "Enhance the MessageComposer to add visual styling for @mentions as users type (highlight with accent color or background). Improve the send button to be disabled when both text and attachments are empty. Add a loading state to the send button during message submission. Ensure the attachment preview uses AttachmentPreview component for consistent, clean layout."
+        },
+        {
+          "path": "frontend/src/components/dms/DmComposer.tsx",
+          "operation": "modify",
+          "description": "Apply the same UX improvements as MessageComposer: add mention visual styling, disable send button when no content, show loading state during submission, and ensure attachment previews use AttachmentPreview for consistent layout."
+        },
+        {
+          "path": "frontend/src/components/feed/PostComposer.tsx",
+          "operation": "modify",
+          "description": "Enhance PostComposer with mention visual feedback, disable post button when content is empty, add loading state during post creation, and ensure attachment previews are cleanly laid out using AttachmentPreview component."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Add online status indicators for users in the members list and channel timeline to show who is currently active",
+      "acceptanceCriteria": [
+        "Users show a green indicator when they have been active recently",
+        "Status indicators appear in the members management panel",
+        "Status indicators appear next to user avatars in the message timeline"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/users/OnlineStatusIndicator.tsx",
+          "operation": "create",
+          "description": "Create an OnlineStatusIndicator component that displays a small green dot badge when a user is considered active/online. Accept a Principal or user identifier as a prop. For now, use a simple heuristic (e.g., show green for all authenticated users or implement a placeholder that can be enhanced later with real activity tracking)."
+        },
+        {
+          "path": "frontend/src/components/servers/management/MembersManagementPanel.tsx",
+          "operation": "modify",
+          "description": "Integrate the OnlineStatusIndicator into the member list display. Show the indicator next to each member's avatar or name to indicate their online status."
+        },
+        {
+          "path": "frontend/src/components/messages/MessageItem.tsx",
+          "operation": "modify",
+          "description": "Add the OnlineStatusIndicator next to the author's UserAvatar in each message item. Position it as a small badge overlay on the avatar or adjacent to the author name."
+        },
+        {
+          "path": "frontend/src/components/dms/DmTimeline.tsx",
+          "operation": "modify",
+          "description": "If DM messages display author avatars, integrate OnlineStatusIndicator next to them to show online status in DM conversations as well."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Enhance server cards in the server list with visual previews including server icon, member count badges, and online member indicators",
+      "acceptanceCriteria": [
+        "Server cards display server icons prominently",
+        "Member count is shown with an icon badge",
+        "Online member count is displayed separately",
+        "Server cards have hover effects for better interactivity"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/servers/ServerCard.tsx",
+          "operation": "create",
+          "description": "Create a ServerCard component that displays a server with its icon (from branding.icon or branding.iconAttachment), name, member count badge, and online member count indicator. Add hover effects (e.g., scale, shadow, border highlight) for interactivity. Accept server data and onClick handler as props. Use shadcn/ui Card components for consistent styling."
+        },
+        {
+          "path": "frontend/src/components/servers/ServerList.tsx",
+          "operation": "modify",
+          "description": "Refactor ServerList to use the new ServerCard component for each server item. Display server icons, member counts, and online indicators. Ensure the list layout is responsive and visually appealing. Maintain existing functionality for server selection, management, and actions."
+        },
+        {
+          "path": "frontend/src/components/servers/ServerBrowser.tsx",
+          "operation": "modify",
+          "description": "Use the ServerCard component in the ServerBrowser to display each browsable server with icon, member count, and online count. Ensure consistent card styling and hover effects across both the user's server list and the browser view."
+        }
+      ]
+    }
+  ]
+}

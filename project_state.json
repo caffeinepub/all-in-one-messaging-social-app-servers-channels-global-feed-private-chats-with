@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Discord-like app with server browsing, invite code joining, and channel management features",
+  "architectural_notes": [
+    "Discord-like communication platform with servers and channels",
+    "Server system with both public browsing and invite-based joining"
+  ],
+  "known_issues": [
+    "actor.createChannel is not a function - blocking channel creation in Version 10"
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-add-a-server-browser-view-that-displays-all-available-public-servers-that-users-can-browse-and-join-include-server-name-member-count-and-description-in-the-listings",
+      "title": "Add a server browser view that displays all available public servers that users can browse and join. Include server name, member count, and description in the listings.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-existing-join-server-dialog-to-support-both-invite-code-entry-and-direct-server-selection-from-the-browse-view-ensure-users-can-successfully-join-servers-through-both-methods",
+      "title": "Enhance the existing join server dialog to support both invite code entry and direct server selection from the browse view. Ensure users can successfully join servers through both methods.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-improve-message-composer-ux-by-adding-visual-feedback-for-mentions-improving-attachment-preview-layouts-and-enhancing-the-send-button-state-to-show-when-content-is-ready-to-send",
+      "title": "Improve message composer UX by adding visual feedback for mentions, improving attachment preview layouts, and enhancing the send button state to show when content is ready to send.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-online-status-indicators-for-users-in-the-members-list-and-channel-timeline-to-show-who-is-currently-active",
+      "title": "Add online status indicators for users in the members list and channel timeline to show who is currently active.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-server-cards-in-the-server-list-with-visual-previews-including-server-icon-member-count-badges-and-online-member-indicators",
+      "title": "Enhance server cards in the server list with visual previews including server icon, member count badges, and online member indicators.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Server browsing - users can view and join available servers from a list",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Join server via invite code/link",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Fix the actor.createChannel is not a function error that is preventing channel creation in the current version. Ensure the createChannel method exists in the backend actor and is properly exported.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Add backend support for listing all public servers with their metadata including name, description, member count, and creation date.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Discord Clone",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

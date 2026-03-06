@@ -1,0 +1,129 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-18T15:13:42.773Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 7,
+    "implemented": 5,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Fix the actor.createChannel is not a function error that is preventing channel creation in the current version. Ensure the createChannel method exists in the backend actor and is properly exported.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Add a server browser view that displays all available public servers that users can browse and join. Include server name, member count, and description in the listings.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/servers/ServerBrowser.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/ServersPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/servers/ServerBrowser.tsx",
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/ServersPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Enhance the existing join server dialog to support both invite code entry and direct server selection from the browse view. Ensure users can successfully join servers through both methods.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/servers/JoinServerDialog.tsx",
+          "frontend/src/components/servers/ServerBrowser.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/servers/JoinServerDialog.tsx",
+          "frontend/src/components/servers/ServerBrowser.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Add backend support for listing all public servers with their metadata including name, description, member count, and creation date.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Improve message composer UX by adding visual feedback for mentions, improving attachment preview layouts, and enhancing the send button state to show when content is ready to send.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/messages/MessageComposer.tsx",
+          "frontend/src/components/dms/DmComposer.tsx",
+          "frontend/src/components/feed/PostComposer.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/messages/MessageComposer.tsx",
+          "frontend/src/components/dms/DmComposer.tsx",
+          "frontend/src/components/feed/PostComposer.tsx"
+        ]
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Add online status indicators for users in the members list and channel timeline to show who is currently active.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/users/OnlineStatusIndicator.tsx",
+          "frontend/src/components/servers/management/MembersManagementPanel.tsx",
+          "frontend/src/components/messages/MessageItem.tsx",
+          "frontend/src/components/dms/DmTimeline.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/users/OnlineStatusIndicator.tsx",
+          "frontend/src/components/servers/management/MembersManagementPanel.tsx",
+          "frontend/src/components/messages/MessageItem.tsx"
+        ]
+      },
+      {
+        "id": "REQ-7",
+        "summary": "Enhance server cards in the server list with visual previews including server icon, member count badges, and online member indicators.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/servers/ServerCard.tsx",
+          "frontend/src/components/servers/ServerList.tsx",
+          "frontend/src/components/servers/ServerBrowser.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/servers/ServerBrowser.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "caffeine.lock.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/dms/DmComposer.tsx",
+    "frontend/src/components/feed/PostComposer.tsx",
+    "frontend/src/components/messages/MessageComposer.tsx",
+    "frontend/src/components/messages/MessageItem.tsx",
+    "frontend/src/components/servers/JoinServerDialog.tsx",
+    "frontend/src/components/servers/ServerBrowser.tsx",
+    "frontend/src/components/servers/management/MembersManagementPanel.tsx",
+    "frontend/src/components/users/OnlineStatusIndicator.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/ServersPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

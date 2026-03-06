@@ -1,0 +1,81 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-18T15:13:42.770Z",
+  "summary": "The diff implements most requirements but has gaps in backend createChannel method exposure, server browser metadata (description missing), server cards (icons and online indicators missing), and message composer visual feedback (mentions styling not visible in markup). Some features are partially implemented or missing evidence.",
+  "missing_requirements": [
+    {
+      "id": "REQ-1",
+      "requirement": "Ensure the createChannel method exists in the backend actor and is properly exported",
+      "reason": "The backend/main.mo diff is truncated and does not show the createChannel method definition or export. Cannot verify if the actor.createChannel error is fixed.",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "requirement": "Each server listing shows description in the server browser",
+      "reason": "ServerBrowser.tsx shows server.name and server.owner but does not display server.description field in the card content",
+      "evidence": [
+        "frontend/src/components/servers/ServerBrowser.tsx"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "requirement": "Server listings include description in backend response",
+      "reason": "Backend diff is truncated and does not show the listAllPublicServers method or ServerInfo type definition with description field",
+      "evidence": [
+        "backend/main.mo"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "requirement": "Mentions show visual styling as users type",
+      "reason": "MessageComposer.tsx mentions 'mention visual styling via accent background' in the summary but the diff shows no visual styling markup (className with accent colors) in the Input or MentionPicker integration",
+      "evidence": [
+        "frontend/src/components/messages/MessageComposer.tsx"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "Users show a green indicator when they have been active recently with real activity tracking",
+      "reason": "OnlineStatusIndicator.tsx hardcodes isOnline = true with comment 'For now, show all authenticated users as online' - does not implement actual activity-based status",
+      "evidence": [
+        "frontend/src/components/users/OnlineStatusIndicator.tsx"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "requirement": "Server cards display server icons prominently",
+      "reason": "ServerBrowser.tsx card does not render server icon or iconAttachment from server branding",
+      "evidence": [
+        "frontend/src/components/servers/ServerBrowser.tsx"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "requirement": "Online member count is displayed separately on server cards",
+      "reason": "ServerBrowser.tsx does not show online member count - only displays static 'Server' badge without member counts",
+      "evidence": [
+        "frontend/src/components/servers/ServerBrowser.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [],
+  "confidence": 0.75,
+  "changed_files": [
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/components/dms/DmComposer.tsx",
+    "frontend/src/components/feed/PostComposer.tsx",
+    "frontend/src/components/messages/MessageComposer.tsx",
+    "frontend/src/components/messages/MessageItem.tsx",
+    "frontend/src/components/servers/JoinServerDialog.tsx",
+    "frontend/src/components/servers/ServerBrowser.tsx",
+    "frontend/src/components/servers/management/MembersManagementPanel.tsx",
+    "frontend/src/components/users/OnlineStatusIndicator.tsx",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/pages/ServersPage.tsx",
+    "project_state.json"
+  ]
+}

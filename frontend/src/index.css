@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 0.75rem;
+        --background: 0.98 0 0;
+        --foreground: 0.15 0 0;
+        --card: 1 0 0;
+        --card-foreground: 0.15 0 0;
+        --popover: 1 0 0;
+        --popover-foreground: 0.15 0 0;
+        --primary: 0.55 0.18 35;
+        --primary-foreground: 0.98 0 0;
+        --secondary: 0.96 0.02 80;
+        --secondary-foreground: 0.15 0 0;
+        --muted: 0.96 0 0;
+        --muted-foreground: 0.50 0 0;
+        --accent: 0.94 0.04 60;
+        --accent-foreground: 0.15 0 0;
+        --destructive: 0.55 0.22 25;
+        --destructive-foreground: 0.98 0 0;
+        --border: 0.90 0 0;
+        --input: 0.90 0 0;
+        --ring: 0.55 0.18 35;
+        
+        /* Settings theme - warm neutral palette */
+        --settings-background: 0.97 0.01 45;
+        --settings-foreground: 0.20 0.02 30;
+        --settings-card: 0.99 0 0;
+        --settings-muted: 0.94 0.01 50;
+        --settings-muted-foreground: 0.45 0.02 35;
+        --settings-accent: 0.65 0.12 40;
+        --settings-accent-foreground: 0.98 0 0;
+    }
+
+    .dark {
+        --background: 0.12 0 0;
+        --foreground: 0.98 0 0;
+        --card: 0.16 0 0;
+        --card-foreground: 0.98 0 0;
+        --popover: 0.18 0 0;
+        --popover-foreground: 0.98 0 0;
+        --primary: 0.70 0.20 40;
+        --primary-foreground: 0.12 0 0;
+        --secondary: 0.22 0.03 50;
+        --secondary-foreground: 0.98 0 0;
+        --muted: 0.22 0 0;
+        --muted-foreground: 0.65 0 0;
+        --accent: 0.28 0.08 45;
+        --accent-foreground: 0.98 0 0;
+        --destructive: 0.60 0.24 20;
+        --destructive-foreground: 0.98 0 0;
+        --border: 0.25 0 0;
+        --input: 0.25 0 0;
+        --ring: 0.70 0.20 40;
+        
+        /* Settings theme - warm neutral palette for dark mode */
+        --settings-background: 0.16 0.01 35;
+        --settings-foreground: 0.92 0.01 40;
+        --settings-card: 0.20 0.01 35;
+        --settings-muted: 0.24 0.02 40;
+        --settings-muted-foreground: 0.60 0.02 38;
+        --settings-accent: 0.55 0.14 42;
+        --settings-accent-foreground: 0.98 0 0;
+    }
+
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+    
+    /* Settings theme wrapper */
+    .settings-theme {
+        background: oklch(var(--settings-background));
+        color: oklch(var(--settings-foreground));
+    }
+    
+    .settings-theme .settings-card {
+        background: oklch(var(--settings-card));
+        border-color: oklch(var(--settings-muted));
+    }
+    
+    .settings-theme .text-settings-foreground {
+        color: oklch(var(--settings-foreground));
+    }
+    
+    .settings-theme .text-settings-muted-foreground {
+        color: oklch(var(--settings-muted-foreground));
+    }
+    
+    .settings-theme .bg-settings-accent {
+        background: oklch(var(--settings-accent));
+    }
+    
+    .settings-theme .text-settings-accent-foreground {
+        color: oklch(var(--settings-accent-foreground));
+    }
+    
+    .settings-theme .bg-settings-muted {
+        background: oklch(var(--settings-muted));
+    }
+    
+    .settings-theme .hover\:bg-settings-muted:hover {
+        background: oklch(var(--settings-muted));
+    }
+    
+    .settings-theme .hover\:text-settings-foreground:hover {
+        color: oklch(var(--settings-foreground));
+    }
+}

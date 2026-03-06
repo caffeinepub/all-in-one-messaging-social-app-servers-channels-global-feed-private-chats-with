@@ -1,0 +1,165 @@
+{
+  "kind": "build_request",
+  "title": "Fix channel creation error and add server joining features",
+  "projectName": "Discord Clone",
+  "priority": "high",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Fix the actor.createChannel is not a function error that is preventing channel creation in the current version. Ensure the createChannel method exists in the backend actor and is properly exported.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-6",
+          "msg-8"
+        ],
+        "quotes": [
+          "I cant create a channel now because of the error",
+          "The error is in this version, not the previous one"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can successfully create channels without encountering the actor.createChannel error",
+        "The createChannel method is defined in backend/main.mo and properly exposed",
+        "Channel creation functionality works through the CreateChannelForm component"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add a server browser view that displays all available public servers that users can browse and join. Include server name, member count, and description in the listings.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6",
+          "msg-8"
+        ],
+        "quotes": [
+          "Both, but people can actually join servers",
+          "You want both server browsing AND join via invite code joining functionality"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can view a list of all available servers",
+        "Each server listing shows its name, member count, and description",
+        "Users can click to join any server from the browse view",
+        "The server browser is accessible from the servers page navigation"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Enhance the existing join server dialog to support both invite code entry and direct server selection from the browse view. Ensure users can successfully join servers through both methods.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-6",
+          "msg-8"
+        ],
+        "quotes": [
+          "Both, but people can actually join servers",
+          "browse available servers AND join via invite code options"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users can join servers by entering an invite code",
+        "Users can join servers by selecting from the browse list",
+        "Both joining methods properly add the user to the server",
+        "Success feedback is shown after joining",
+        "The newly joined server appears in the user's server list"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Add backend support for listing all public servers with their metadata including name, description, member count, and creation date.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-6",
+          "msg-8"
+        ],
+        "quotes": [
+          "browse available servers"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend exposes a method to list all public servers",
+        "Server listings include name, description, member count, and creation date",
+        "Only non-banned users can view the server list",
+        "Server list query is properly integrated with frontend hooks"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Improve message composer UX by adding visual feedback for mentions, improving attachment preview layouts, and enhancing the send button state to show when content is ready to send.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "add anything else u want"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Mentions show visual styling as users type",
+        "Attachment previews display in a clean, organized layout",
+        "Send button is disabled when there is no content to send",
+        "Send button shows loading state during message submission"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Add online status indicators for users in the members list and channel timeline to show who is currently active.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "add anything else u want"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users show a green indicator when they have been active recently",
+        "Status indicators appear in the members management panel",
+        "Status indicators appear next to user avatars in the message timeline"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Enhance server cards in the server list with visual previews including server icon, member count badges, and online member indicators.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "add anything else u want"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Server cards display server icons prominently",
+        "Member count is shown with an icon badge",
+        "Online member count is displayed separately",
+        "Server cards have hover effects for better interactivity"
+      ]
+    }
+  ],
+  "constraints": [
+    "Maintain the single-actor backend architecture in backend/main.mo",
+    "Do not modify read-only frontend paths including useInternetIdentity hooks, useActor.ts, main.tsx, and components/ui directory",
+    "Preserve existing Internet Identity authentication flow",
+    "Keep all server data and state management within the main backend actor"
+  ],
+  "nonGoals": [
+    "Real-time WebSocket features for live updates",
+    "Voice or video chat functionality",
+    "Screen sharing capabilities",
+    "External authentication providers beyond Internet Identity",
+    "Mobile app versions",
+    "Email notifications for server activity"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}
